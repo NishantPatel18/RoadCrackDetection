@@ -12,7 +12,7 @@ def get_images_from_folder(folder):
     return images
 
 
-def loading_data(data_dir):
+def loading_data(data_dir, batch_size):
     train_dir = data_dir + '/Train'
     # valid_dir = data_dir + '/valid'
     test_dir = data_dir + '/Test'
@@ -24,19 +24,16 @@ def loading_data(data_dir):
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
 
-    Trainset = datasets.ImageFolder(train_dir, transform=image_transforms)
-    Testset = datasets.ImageFolder(test_dir, transform=image_transforms)
-    Trainloader = torch.utils.data.DataLoader(Trainset, batch_size=10, shuffle=True)
-    Testloader = torch.utils.data.DataLoader(Testset, batch_size=10, shuffle=True)
+    TrainSet = datasets.ImageFolder(train_dir, transform=image_transforms)
+    TestSet = datasets.ImageFolder(test_dir, transform=image_transforms)
+    TrainLoader = torch.utils.data.DataLoader(TrainSet, batch_size=batch_size, shuffle=True)
+    TestLoader = torch.utils.data.DataLoader(TestSet, batch_size=batch_size, shuffle=True)
 
-    print(len(Trainloader))
-    print(len(Testloader))
-    print(len(Trainset))
-    print(len(Testset))
-    print(Trainset.classes)
-    print(Testset.classes)
+    print(len(TrainSet), ' train image and ', len(TestSet), ' test images are successfully loaded.')
+    print('Train classes are', TrainSet.classes)
+    print('Test classes are', TestSet.classes)
 
-    return Trainloader, Testloader, Trainset, Testset
+    return TrainLoader, TestLoader, TrainSet, TestSet
 
 
 def make_model():
@@ -62,13 +59,15 @@ def make_model():
     model.classifier = classifier
     # To print specific layer, you can print index or name of layer like this
     # print(model[0]) or print(model.fc1)
-    print(model)
+    print('Classifier is successfully created.')
     return model
 
 
-def train_model(model, epoch, Loader):
+def train_model(model, epoch, Loader, device):
+    model.to(device)
     criterion = nn.NLLLoss()
     optimizer = optim.Adam(model.classifier.parameters(), lr=0.001)
+    batch = 1
     start = time.time()
     for epoch in range(epoch):  # loop over the dataset multiple times
 
@@ -81,7 +80,7 @@ def train_model(model, epoch, Loader):
             optimizer.zero_grad()
 
             # forward + backward + optimize
-            inputs, labels = inputs.to('cpu'), labels.to('cpu')
+            inputs, labels = inputs.to(device), labels.to(device)
 
             optimizer.zero_grad()
 
@@ -92,15 +91,16 @@ def train_model(model, epoch, Loader):
             optimizer.step()
 
             running_loss += loss.item()
-            print('running loss at epoch(', epoch, ')= ', running_loss)
+            print('Running loss at epoch ', epoch+1, ', batch ', batch, ' = ', running_loss)
+            batch += 1
+        batch = 1
 
         end = time.time()
     print('Finished Training in %0.2f minutes' % ((end - start) / 60))
     return model
 
 
-def test_model(model, TestLoader):
-    device = 'cpu'
+def test_model(model, TestLoader, device):
     model.eval()
     model.to(device)
     correct = 0
@@ -123,10 +123,10 @@ def test_model(model, TestLoader):
             predict_tensor = torch.Tensor(predict_class)
             # print(predict_tensor)
             total += labels.size(0)
-            print('total', total)
-            print('label size', labels.size(0))
+            # print('total', total)
+            # print('label size', labels.size(0))
             # print('prediction', prediction)
-            print('label data', labels.data)
+            # print('label data', labels.data)
             correct += (predict_tensor == labels).sum().item()
 
-        print('Accuracy of the network on test images: %0.3f %%' % (100 * correct / total))
+        print('Accuracy of the network on test images is %0.3f %%' % (100 * correct / total))

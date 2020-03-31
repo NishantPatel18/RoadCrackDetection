@@ -1,20 +1,20 @@
-import torch.nn as nn
-from torch import optim
 import torch
-from torch.utils import data
-import torch.nn.functional as F
 from SetFunctionUp import loading_data, train_model, test_model, make_model
-from SetFunctionUp import get_images_from_folder
-from torchvision import datasets, transforms, models
 
-Trainloader, Testloader, Trainset, Testset = loading_data("RoadData")
 
+epoch = 5
+if torch.cuda.is_available():
+    device = 'cuda'
+else:
+    device = 'cpu'
+# device = 'cpu'
+batch_size = 140
+
+TrainLoader, TestLoader, TrainSet, TestSet = loading_data("RoadData", batch_size)
 
 model = make_model()
 
-epoch = 5
+TrainedModel = train_model(model, epoch, TrainLoader, device)
 
-TrainedModel = train_model(model, epoch, Trainloader)
-
-# test_model(model, Testloader)
-test_model(TrainedModel, Testloader)
+# test_model(model, Testloader, device)
+test_model(TrainedModel, TestLoader, device)
