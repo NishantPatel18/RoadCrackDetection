@@ -1,16 +1,20 @@
-import torch
 import torch.nn as nn
+from torch import optim
+import torch
+from torch.utils import data
+import torch.nn.functional as F
+from SetFunctionUp import loading_data, train_model, test_model, make_model
+from SetFunctionUp import get_images_from_folder
+from torchvision import datasets, transforms, models
 
-import cv2
-import os
-import glob
-import Function
+Trainloader, Testloader, Trainset, Testset = loading_data("RoadData")
 
-train_po = Function.get_images_from_folder("Train/Po")
-train_ne = Function.get_images_from_folder("Train/Ne")
-test_po = Function.get_images_from_folder("Test/Po")
-test_ne = Function.get_images_from_folder("Test/Ne")
-valid_po = Function.get_images_from_folder("Valid/ValidHunPo")
-valid_ne = Function.get_images_from_folder("Valid/ValidHunNe")
 
-model = Function.make_model()
+model = make_model()
+
+epoch = 5
+
+TrainedModel = train_model(model, epoch, Trainloader)
+
+# test_model(model, Testloader)
+test_model(TrainedModel, Testloader)
