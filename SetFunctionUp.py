@@ -92,14 +92,10 @@ def train_model(model, epoch, Loader):
             optimizer.step()
 
             running_loss += loss.item()
-            print('running loss = ', running_loss)
-            if i % 5000 == 4999:  # every 5000 mini batches
-                print('[Epoch %d, %5d Mini Batches] loss: %.3f' %
-                      (epoch + 1, i + 1, running_loss / 5000))
-                running_loss = 0.0
+            print('running loss at epoch(', epoch, ')= ', running_loss)
+
         end = time.time()
-    print('Finished Training')
-    print('%0.2f minutes' % ((end - start) / 60))
+    print('Finished Training in %0.2f minutes' % ((end - start) / 60))
     return model
 
 
