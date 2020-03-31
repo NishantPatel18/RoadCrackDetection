@@ -26,8 +26,8 @@ def loading_data(data_dir):
 
     Trainset = datasets.ImageFolder(train_dir, transform=image_transforms)
     Testset = datasets.ImageFolder(test_dir, transform=image_transforms)
-    Trainloader = torch.utils.data.DataLoader(Trainset, batch_size=64, shuffle=True)
-    Testloader = torch.utils.data.DataLoader(Testset, batch_size=64, shuffle=True)
+    Trainloader = torch.utils.data.DataLoader(Trainset, batch_size=10, shuffle=True)
+    Testloader = torch.utils.data.DataLoader(Testset, batch_size=10, shuffle=True)
 
     print(len(Trainloader))
     print(len(Testloader))
