@@ -11,8 +11,8 @@ def get_content(path):
 
 
 # Testing - getContent()
-get_content('Train/Positive')
-get_content('Train/Negative')
-get_content('Test/Positive')
-get_content('Test/Negative')
+get_content('Train/Crack')
+get_content('Train/NonCrack')
+get_content('Test/Crack')
+get_content('Test/NonCrack')
 
