@@ -26,8 +26,9 @@ val_set = datasets.ImageFolder("/content/RoadCrackDetection/Test", transform=tra
 print('The class labels are:', train_set.classes, '\n')
 
 # Put into a Dataloader using torch library
-train_loader = torch.utils.data.DataLoader(train_set, batch_size=60, shuffle=True)
-val_loader = torch.utils.data.DataLoader(val_set, batch_size=60, shuffle=True)
+batch_size=1000
+train_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=True)
+val_loader = torch.utils.data.DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
 # Get pretrained model using torchvision.models as models library
 model = models.densenet161(pretrained=True)
