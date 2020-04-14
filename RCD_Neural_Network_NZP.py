@@ -144,29 +144,29 @@ for epoch in range(epochs):
             for p, t in zip(preds.view(-1), labels.view(-1)):
                 confusion_matrix[p.long(), t.long()] += 1
 
-    print(confusion_matrix)
+        print(confusion_matrix)
 
-    TP = confusion_matrix.diag()
+        TP = confusion_matrix.diag()
 
-    for c in range(total_classes):
-        idx = torch.ones(total_classes).byte()
-        idx[c] = 0
-        TN = confusion_matrix[idx.nonzero()[:, None], idx.nonzero()].sum()
-        FP = confusion_matrix[c, idx].sum()
-        FN = confusion_matrix[idx, c].sum()
+        for c in range(total_classes):
+            idx = torch.ones(total_classes).byte()
+            idx[c] = 0
+            TN = confusion_matrix[idx.nonzero()[:, None], idx.nonzero()].sum()
+            FP = confusion_matrix[c, idx].sum()
+            FN = confusion_matrix[idx, c].sum()
 
-        sensitivity = (TP[c] / (TP[c] + FN))
-        specificity = (TN / (TN + FP))
-        re_call = (TP / (TP + FP))
-        pre_cision = (TP / (TP + FN))
-        f1_score = 2 * ((pre_cision * re_call) / (pre_cision + re_call))
+            sensitivity = (TP[c] / (TP[c] + FN))
+            specificity = (TN / (TN + FP))
+            re_call = (TP / (TP + FP))
+            pre_cision = (TP / (TP + FN))
+            f1_score = 2 * ((pre_cision * re_call) / (pre_cision + re_call))
 
-        print('Class {}\nTP {}, TN {}, FP {}, FN {}'.format(c, TP[c], TN, FP, FN))
-        print('Sensitivity = {}'.format(sensitivity))
-        print('Specificity = {}'.format(specificity))
-        print('Recall = {}'.format(re_call))
-        print('Precision = {}'.format(pre_cision))
-        print('F1 Score = {}'.format(f1_score))
+            print('Class {}\nTP {}, TN {}, FP {}, FN {}'.format(c, TP[c], TN, FP, FN))
+            print('Sensitivity = {}'.format(sensitivity))
+            print('Specificity = {}'.format(specificity))
+            print('Recall = {}'.format(re_call))
+            print('Precision = {}'.format(pre_cision))
+            print('F1 Score = {}'.format(f1_score))
 
 end_valid = time.time()
 print('Finished Epoch', epoch + 1, 'Validating in %0.2f minutes' % ((end_valid - start_valid) / 60))
