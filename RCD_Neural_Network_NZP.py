@@ -63,10 +63,7 @@ model.to(device)
 criterion = nn.NLLLoss()
 # Set the optimizer function using torch.optim as optim library
 optimizer = optim.Adam(model.classifier.parameters(), lr=0.001)
-# comment
-# comment
-# comment
-# comment
+
 # Training the Model
 epochs = 10
 start_train = time.time()
