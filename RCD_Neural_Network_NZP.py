@@ -20,13 +20,13 @@ transformations = transforms.Compose([
 ])
 
 # Load in each dataset and apply transformations using the torchvision.datasets as datasets library
-train_set = datasets.ImageFolder("/content/RoadCrackDetection/Train", transform=transformations)
-val_set = datasets.ImageFolder("/content/RoadCrackDetection/Test", transform=transformations)
+train_set = datasets.ImageFolder("/content/RoadCrackDetection/RDDC_Train", transform=transformations)
+val_set = datasets.ImageFolder("/content/RoadCrackDetection/RDDC_Test", transform=transformations)
 
 print('The class labels are:', train_set.classes, '\n')
 
 # Put into a Dataloader using torch library
-batch_size=1000
+batch_size = 300
 train_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=True)
 val_loader = torch.utils.data.DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
@@ -38,13 +38,15 @@ for param in model.parameters():
 
 # Create new classifier for model using torch.nn as nn library
 classifier_input = model.classifier.in_features
-num_labels = 2
-classifier = nn.Sequential(nn.Linear(classifier_input, 64),
+num_labels = 8
+classifier = nn.Sequential(nn.Dropout(0.25),
+                           nn.Linear(classifier_input, 64),
                            nn.ReLU(),
                            nn.Linear(64, 32),
                            nn.ReLU(),
                            nn.Linear(32, num_labels),
                            nn.LogSoftmax(dim=1))
+
 # Replace default classifier with new classifier
 model.classifier = classifier
 
@@ -60,7 +62,7 @@ model.to(device)
 # Set the error function using torch.nn as nn library
 criterion = nn.NLLLoss()
 # Set the optimizer function using torch.optim as optim library
-optimizer = optim.Adam(model.classifier.parameters())
+optimizer = optim.Adam(model.classifier.parameters(), lr=0.001)
 
 # Training the Model
 epochs = 10
@@ -104,6 +106,12 @@ for epoch in range(epochs):
     start_valid = time.time()
     model.eval()
     counter = 0
+
+    total_classes = 8
+    output = torch.randn(batch_size, total_classes)  # refer to output after softmax
+    target = torch.randint(0, total_classes, (batch_size,))  # labels
+    confusion_matrix = torch.zeros(total_classes, total_classes)
+
     # Tell torch not to calculate gradients
     with torch.no_grad():
         for inputs, labels in val_loader:
@@ -131,15 +139,43 @@ for epoch in range(epochs):
             counter += 1
             print("Batch:", counter, "out of", len(val_loader))
 
-    end_valid = time.time()
-    print('Finished Epoch', epoch + 1, 'Validating in %0.2f minutes' % ((end_valid - start_valid) / 60))
+            _, preds = torch.max(output, 1)
 
-    # Get the average loss for the entire epoch
-    train_loss = train_loss / len(train_loader.dataset)
-    valid_loss = val_loss / len(val_loader.dataset)
-    # Print out the information
-    print('Accuracy: %0.3f %%' % (accuracy / len(val_loader) * 100))
-    print('Training Loss: {:.6f} ' '\tValidation Loss: {:.6f}'.format(train_loss, valid_loss), '\n')
+            for p, t in zip(preds.view(-1), labels.view(-1)):
+                confusion_matrix[p.long(), t.long()] += 1
+
+        print(confusion_matrix)
+
+        TP = confusion_matrix.diag()
+
+        for c in range(total_classes):
+            idx = torch.ones(total_classes).byte()
+            idx[c] = 0
+            TN = confusion_matrix[idx.nonzero()[:, None], idx.nonzero()].sum()
+            FP = confusion_matrix[c, idx].sum()
+            FN = confusion_matrix[idx, c].sum()
+
+            sensitivity = (TP[c] / (TP[c] + FN))
+            specificity = (TN / (TN + FP))
+            re_call = (TP / (TP + FP))
+            pre_cision = (TP / (TP + FN))
+            f1_score = 2 * ((pre_cision * re_call) / (pre_cision + re_call))
+
+            print('Class {}\nTP {}, TN {}, FP {}, FN {}'.format(c, TP[c], TN, FP, FN))
+            print('Sensitivity = {}'.format(sensitivity))
+            print('Specificity = {}'.format(specificity))
+            print('Recall = {}'.format(re_call))
+            print('Precision = {}'.format(pre_cision))
+            print('F1 Score = {}'.format(f1_score))
+
+end_valid = time.time()
+print('Finished Epoch', epoch + 1, 'Validating in %0.2f minutes' % ((end_valid - start_valid) / 60))
+
+# Get the average loss for the entire epoch
+train_loss = train_loss / len(train_loader.dataset)
+valid_loss = val_loss / len(val_loader.dataset)
+# Print out the information
+print('Accuracy: %0.3f %%' % (accuracy / len(val_loader) * 100))
+print('Training Loss: {:.6f} ' '\tValidation Loss: {:.6f}'.format(train_loss, valid_loss), '\n')
 
 print('Total Time is %0.2f minutes' % ((end_valid - start_train) / 60))
-
