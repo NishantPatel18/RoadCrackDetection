@@ -20,18 +20,21 @@ transformations = transforms.Compose([
 ])
 
 # Load in each dataset and apply transformations using the torchvision.datasets as datasets library
-train_set = datasets.ImageFolder("/content/RoadCrackDetection/RDDC_Train", transform=transformations)
-val_set = datasets.ImageFolder("/content/RoadCrackDetection/RDDC_Test", transform=transformations)
+train_set = datasets.ImageFolder("/content/RoadCrackDetection/AUG_RDDC_Train", transform=transformations)
+val_set = datasets.ImageFolder("/content/RoadCrackDetection/AUG_RDDC_Test", transform=transformations)
+# train_set = datasets.ImageFolder("/content/RoadCrackDetection/Small_Train", transform=transformations)
+# val_set = datasets.ImageFolder("/content/RoadCrackDetection/Small_Test", transform=transformations)
 
 print('The class labels are:', train_set.classes, '\n')
 
 # Put into a Dataloader using torch library
-batch_size = 300
+batch_size = 32
 train_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=True)
 val_loader = torch.utils.data.DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
 # Get pretrained model using torchvision.models as models library
 model = models.densenet161(pretrained=True)
+
 # Turn off training for their parameters
 for param in model.parameters():
     param.requires_grad = False
@@ -39,8 +42,7 @@ for param in model.parameters():
 # Create new classifier for model using torch.nn as nn library
 classifier_input = model.classifier.in_features
 num_labels = 8
-classifier = nn.Sequential(nn.Dropout(0.25),
-                           nn.Linear(classifier_input, 64),
+classifier = nn.Sequential(nn.Linear(classifier_input, 64),
                            nn.ReLU(),
                            nn.Linear(64, 32),
                            nn.ReLU(),
@@ -62,7 +64,7 @@ model.to(device)
 # Set the error function using torch.nn as nn library
 criterion = nn.NLLLoss()
 # Set the optimizer function using torch.optim as optim library
-optimizer = optim.Adam(model.classifier.parameters(), lr=0.001)
+optimizer = optim.Adam(model.classifier.parameters())
 
 # Training the Model
 epochs = 10
@@ -99,8 +101,6 @@ for epoch in range(epochs):
 
     end_train = time.time()
     print('Finished Epoch', epoch + 1, 'Training in %0.2f minutes' % ((end_train - start_train) / 60))
-
-    # Validating the Model
 
     # Evaluating the model
     start_valid = time.time()
@@ -143,6 +143,8 @@ for epoch in range(epochs):
 
             for p, t in zip(preds.view(-1), labels.view(-1)):
                 confusion_matrix[p.long(), t.long()] += 1
+                # confusion_matrix[p.int(), t.int()] += 1
+                # confusion_matrix[p, t] += 1
 
         print(confusion_matrix)
 
@@ -157,25 +159,26 @@ for epoch in range(epochs):
 
             sensitivity = (TP[c] / (TP[c] + FN))
             specificity = (TN / (TN + FP))
-            re_call = (TP / (TP + FP))
-            pre_cision = (TP / (TP + FN))
+            re_call = (TP[c] / (TP[c] + FP))
+            pre_cision = (TP[c] / (TP[c] + FN))
             f1_score = 2 * ((pre_cision * re_call) / (pre_cision + re_call))
 
-            print('Class {}\nTP {}, TN {}, FP {}, FN {}'.format(c, TP[c], TN, FP, FN))
+            print('Class {}\nTP {}, TN {}, FP {}, FN {}'.format(c+1, TP[c], TN, FP, FN))
             print('Sensitivity = {}'.format(sensitivity))
             print('Specificity = {}'.format(specificity))
             print('Recall = {}'.format(re_call))
             print('Precision = {}'.format(pre_cision))
             print('F1 Score = {}'.format(f1_score))
 
-end_valid = time.time()
-print('Finished Epoch', epoch + 1, 'Validating in %0.2f minutes' % ((end_valid - start_valid) / 60))
+    end_valid = time.time()
+    print('Finished Epoch', epoch + 1, 'Validating in %0.2f minutes' % ((end_valid - start_valid) / 60))
 
-# Get the average loss for the entire epoch
-train_loss = train_loss / len(train_loader.dataset)
-valid_loss = val_loss / len(val_loader.dataset)
-# Print out the information
-print('Accuracy: %0.3f %%' % (accuracy / len(val_loader) * 100))
-print('Training Loss: {:.6f} ' '\tValidation Loss: {:.6f}'.format(train_loss, valid_loss), '\n')
+    # Get the average loss for the entire epoch
+    train_loss = train_loss / len(train_loader.dataset)
+    valid_loss = val_loss / len(val_loader.dataset)
 
-print('Total Time is %0.2f minutes' % ((end_valid - start_train) / 60))
+    # Print out the information
+    print('Accuracy: %0.3f %%' % (accuracy / len(val_loader) * 100))
+    print('Training Loss: {:.6f} ' '\tValidation Loss: {:.6f}'.format(train_loss, valid_loss), '\n')
+
+    print('Total Time is %0.2f minutes' % ((end_valid - start_train) / 60))
