@@ -11,6 +11,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 
+
+def get_all_preds(model, loader):
+    counter = 0;
+    all_preds = torch.tensor([])
+
+    for batch in loader:
+        counter += 1
+        print('Batch: ', counter)
+        images, labels = batch
+        preds = model(images)
+        all_preds = torch.cat((all_preds, preds), dim=0)
+
+    return all_preds
+
+
+def get_num_correct(preds, labels):
+    return preds.argmax(dim=1).eq(labels).sum().item()
+
+
 # Specify transforms using torchvision.transforms as transforms library
 transformations = transforms.Compose([
     transforms.Resize(255),
@@ -20,14 +39,14 @@ transformations = transforms.Compose([
 ])
 
 # Load in each dataset and apply transformations using the torchvision.datasets as datasets library
-train_set = datasets.ImageFolder("/content/RoadCrackDetection/Train", transform=transformations)
-val_set = datasets.ImageFolder("/content/RoadCrackDetection/Test", transform=transformations)
+train_set = datasets.ImageFolder("Train", transform=transformations)
+val_set = datasets.ImageFolder("Test", transform=transformations)
 
 print('The class labels are:', train_set.classes, '\n')
 
 # Put into a Dataloader using torch library
-train_loader = torch.utils.data.DataLoader(train_set, batch_size=60, shuffle=True)
-val_loader = torch.utils.data.DataLoader(val_set, batch_size=60, shuffle=True)
+train_loader = torch.utils.data.DataLoader(train_set, batch_size=1, shuffle=True)
+val_loader = torch.utils.data.DataLoader(val_set, batch_size=1, shuffle=True)
 
 # Get pretrained model using torchvision.models as models library
 model = models.densenet161(pretrained=True)
@@ -62,7 +81,7 @@ criterion = nn.NLLLoss()
 optimizer = optim.Adam(model.classifier.parameters())
 
 # Training the Model
-epochs = 10
+epochs = 1
 start_train = time.time()
 
 for epoch in range(epochs):
@@ -132,6 +151,18 @@ for epoch in range(epochs):
 
     end_valid = time.time()
     print('Finished Epoch', epoch + 1, 'Validating in %0.2f minutes' % ((end_valid - start_valid) / 60))
+
+    # Prediction
+    with torch.no_grad():
+        prediction_loader = torch.utils.data.DataLoader(train_set, batch_size=1)
+        train_preds = get_all_preds(model, prediction_loader)
+
+    print(train_preds.shape)
+
+    preds_correct = get_num_correct(train_preds, train_set.targets)
+
+    print('total correct:', preds_correct)
+    print('accuracy:', preds_correct / len(train_set))
 
     # Get the average loss for the entire epoch
     train_loss = train_loss / len(train_loader.dataset)
