@@ -1,0 +1,34 @@
+<annotation>
+    <folder>Numazu</folder>
+    <filename>Numazu_20170906084950.jpg</filename>
+    <size>
+        <width>600</width>
+        <height>600</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>D44</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>281</xmin>
+            <ymin>247</ymin>
+            <xmax>512</xmax>
+            <ymax>573</ymax>
+        </bndbox>
+    </object>
+    <object>
+        <name>D44</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>319</xmin>
+            <ymin>260</ymin>
+            <xmax>597</xmax>
+            <ymax>462</ymax>
+        </bndbox>
+    </object>
+</annotation>

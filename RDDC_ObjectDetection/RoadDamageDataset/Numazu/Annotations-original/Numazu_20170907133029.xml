@@ -1,0 +1,30 @@
+<annotation>
+    <folder>Numazu</folder>
+    <filename>Numazu_20170907133029.jpg</filename>
+    <size>
+        <width>600</width>
+        <height>600</height>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>Lisecense plate-Readable or notreadable</name>
+        <bndbox>
+            <xmin>288</xmin>
+            <ymin>395</ymin>
+            <xmax>356</xmax>
+            <ymax>455</ymax>
+        </bndbox>
+    </object>
+    <object>
+        <name>D20</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>75</xmin>
+            <ymin>441</ymin>
+            <xmax>236</xmax>
+            <ymax>599</ymax>
+        </bndbox>
+    </object>
+</annotation>

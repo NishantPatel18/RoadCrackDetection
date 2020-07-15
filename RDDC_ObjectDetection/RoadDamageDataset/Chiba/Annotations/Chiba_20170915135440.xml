@@ -1,0 +1,27 @@
+<annotation>
+    <folder>Chiba</folder>
+    <filename>Chiba_20170915135440.jpg</filename>
+    <size>
+        <width>600</width>
+        <height>600</height>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>D01</name>
+        <bndbox>
+            <xmin>449</xmin>
+            <ymin>460</ymin>
+            <xmax>551</xmax>
+            <ymax>550</ymax>
+        </bndbox>
+    </object>
+    <object>
+        <name>D20</name>
+        <bndbox>
+            <xmin>387</xmin>
+            <ymin>478</ymin>
+            <xmax>530</xmax>
+            <ymax>586</ymax>
+        </bndbox>
+    </object>
+</annotation>

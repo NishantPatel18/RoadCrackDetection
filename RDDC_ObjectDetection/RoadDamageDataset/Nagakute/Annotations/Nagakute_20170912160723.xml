@@ -1,0 +1,34 @@
+<annotation>
+    <folder>Nagakute</folder>
+    <filename>Nagakute_20170912160723.jpg</filename>
+    <size>
+        <width>600</width>
+        <height>600</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>D44</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>64</xmin>
+            <ymin>361</ymin>
+            <xmax>257</xmax>
+            <ymax>600</ymax>
+        </bndbox>
+    </object>
+    <object>
+        <name>D01</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>335</xmin>
+            <ymin>326</ymin>
+            <xmax>455</xmax>
+            <ymax>597</ymax>
+        </bndbox>
+    </object>
+</annotation>

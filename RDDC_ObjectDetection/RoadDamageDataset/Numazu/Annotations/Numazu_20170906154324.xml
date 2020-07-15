@@ -1,0 +1,36 @@
+<annotation>
+    <folder>Numazu</folder>
+    <filename>Numazu_20170906154324.jpg</filename>
+    <size>
+        <width>600</width>
+        <height>600</height>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>D11</name>
+        <bndbox>
+            <xmin>42</xmin>
+            <ymin>373</ymin>
+            <xmax>485</xmax>
+            <ymax>445</ymax>
+        </bndbox>
+    </object>
+    <object>
+        <name>D20</name>
+        <bndbox>
+            <xmin>240</xmin>
+            <ymin>397</ymin>
+            <xmax>515</xmax>
+            <ymax>556</ymax>
+        </bndbox>
+    </object>
+    <object>
+        <name>D01</name>
+        <bndbox>
+            <xmin>253</xmin>
+            <ymin>294</ymin>
+            <xmax>395</xmax>
+            <ymax>588</ymax>
+        </bndbox>
+    </object>
+</annotation>

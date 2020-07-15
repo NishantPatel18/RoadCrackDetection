@@ -1,0 +1,27 @@
+<annotation>
+    <folder>Ichihara</folder>
+    <filename>Ichihara_20170929101646.jpg</filename>
+    <size>
+        <width>600</width>
+        <height>600</height>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>D01</name>
+        <bndbox>
+            <xmin>411</xmin>
+            <ymin>402</ymin>
+            <xmax>435</xmax>
+            <ymax>556</ymax>
+        </bndbox>
+    </object>
+    <object>
+        <name>D44</name>
+        <bndbox>
+            <xmin>406</xmin>
+            <ymin>431</ymin>
+            <xmax>436</xmax>
+            <ymax>543</ymax>
+        </bndbox>
+    </object>
+</annotation>

@@ -20,8 +20,8 @@ transformations = transforms.Compose([
 ])
 
 # Load in each dataset and apply transformations using the torchvision.datasets as datasets library
-train_set = datasets.ImageFolder("/content/RoadCrackDetection/RDDC_Train", transform=transformations)
-val_set = datasets.ImageFolder("/content/RoadCrackDetection/RDDC_Test", transform=transformations)
+train_set = datasets.ImageFolder("RDDC_Train", transform=transformations)
+val_set = datasets.ImageFolder("RDDC_Test", transform=transformations)
 
 print('The class labels are:', train_set.classes, '\n')
 

@@ -1,0 +1,18 @@
+<annotation>
+    <folder>Muroran</folder>
+    <filename>Muroran_20170907113146.jpg</filename>
+    <size>
+        <width>600</width>
+        <height>600</height>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>D11</name>
+        <bndbox>
+            <xmin>5</xmin>
+            <ymin>514</ymin>
+            <xmax>536</xmax>
+            <ymax>560</ymax>
+        </bndbox>
+    </object>
+</annotation>
