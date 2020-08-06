@@ -1,16 +1,19 @@
+# Sample code from the TorchVision 0.3 Object Detection Finetuning Tutorial
+# http://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
+
 import os
 import numpy as np
 import torch
 from PIL import Image
+
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
-from torchvision.models.detection import FasterRCNN
-from torchvision.models.detection.rpn import AnchorGenerator
-from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
-import transforms as T
+
 from engine import train_one_epoch, evaluate
 import utils
+import transforms as T
+
 
 class PennFudanDataset(object):
     def __init__(self, root, transforms):
@@ -30,7 +33,7 @@ class PennFudanDataset(object):
         # because each color corresponds to a different instance
         # with 0 being background
         mask = Image.open(mask_path)
-        # convert the PIL Image into a numpy array
+
         mask = np.array(mask)
         # instances are encoded as different colors
         obj_ids = np.unique(mask)
@@ -52,7 +55,6 @@ class PennFudanDataset(object):
             ymax = np.max(pos[0])
             boxes.append([xmin, ymin, xmax, ymax])
 
-        # convert everything into a torch.Tensor
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
         # there is only one class
         labels = torch.ones((num_objs,), dtype=torch.int64)
@@ -78,50 +80,6 @@ class PennFudanDataset(object):
 
     def __len__(self):
         return len(self.imgs)
-
-# load a model pre-trained pre-trained on COCO
-model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
-
-# replace the classifier with a new one, that has
-# num_classes which is user-defined
-num_classes = 2  # 1 class (person) + background
-# get number of input features for the classifier
-in_features = model.roi_heads.box_predictor.cls_score.in_features
-# replace the pre-trained head with a new one
-model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
-
-# load a pre-trained model for classification and return
-# only the features
-backbone = torchvision.models.mobilenet_v2(pretrained=True).features
-# FasterRCNN needs to know the number of
-# output channels in a backbone. For mobilenet_v2, it's 1280
-# so we need to add it here
-backbone.out_channels = 1280
-
-# let's make the RPN generate 5 x 3 anchors per spatial
-# location, with 5 different sizes and 3 different aspect
-# ratios. We have a Tuple[Tuple[int]] because each feature
-# map could potentially have different sizes and
-# aspect ratios
-anchor_generator = AnchorGenerator(sizes=((32, 64, 128, 256, 512),),
-                                   aspect_ratios=((0.5, 1.0, 2.0),))
-
-# let's define what are the feature maps that we will
-# use to perform the region of interest cropping, as well as
-# the size of the crop after rescaling.
-# if your backbone returns a Tensor, featmap_names is expected to
-# be [0]. More generally, the backbone should return an
-# OrderedDict[Tensor], and in featmap_names you can choose which
-# feature maps to use.
-roi_pooler = torchvision.ops.MultiScaleRoIAlign(featmap_names=[0],
-                                                output_size=7,
-                                                sampling_ratio=2)
-
-# put the pieces together inside a FasterRCNN model
-model = FasterRCNN(backbone,
-                   num_classes=2,
-                   rpn_anchor_generator=anchor_generator,
-                   box_roi_pool=roi_pooler)
 
 
 def get_model_instance_segmentation(num_classes):
@@ -150,21 +108,6 @@ def get_transform(train):
     if train:
         transforms.append(T.RandomHorizontalFlip(0.5))
     return T.Compose(transforms)
-
-model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
-dataset = PennFudanDataset('PennFudanPed', get_transform(train=True))
-data_loader = torch.utils.data.DataLoader(
- dataset, batch_size=2, shuffle=True, num_workers=4,
- collate_fn=utils.collate_fn)
-# For Training
-images,targets = next(iter(data_loader))
-images = list(image for image in images)
-targets = [{k: v for k, v in t.items()} for t in targets]
-output = model(images,targets)   # Returns losses and detections
-# For inference
-model.eval()
-x = [torch.rand(3, 300, 400), torch.rand(3, 500, 400)]
-predictions = model(x)           # Returns predictions
 
 
 def main():
@@ -218,3 +161,7 @@ def main():
         evaluate(model, data_loader_test, device=device)
 
     print("That's it!")
+
+
+if __name__ == "__main__":
+    main()
