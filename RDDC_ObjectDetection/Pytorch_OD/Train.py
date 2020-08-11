@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import torch
 import torch.utils.data
@@ -22,12 +23,12 @@ class RaccoonDataset(torch.utils.data.Dataset):
     def __init__(self, root, data_file, transforms=None):
         self.root = root
         self.transforms = transforms
-        self.imgs = sorted(os.listdir(os.path.join(root, "images")))
+        self.imgs = sorted(os.listdir(os.path.join(root)))
         self.path_to_data_file = data_file
 
     def __getitem__(self, idx):
         # load images and bounding boxes
-        img_path = os.path.join(self.root, "images", self.imgs[idx])
+        img_path = os.path.join(self.root, self.imgs[idx])
         img = Image.open(img_path).convert("RGB")
         box_list = parse_one_annot(self.path_to_data_file,
                                    self.imgs[idx])
@@ -56,7 +57,7 @@ class RaccoonDataset(torch.utils.data.Dataset):
         return len(self.imgs)
 
 
-dataset = RaccoonDataset(root="/content/raccoon_dataset", data_file="/content/raccoon_dataset/data/raccoon_labels.csv")
+dataset = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/10_Images_Adachi", data_file="/content/road_10_labels.csv")
 dataset.__getitem__(0)
 
 
@@ -83,25 +84,26 @@ def get_transform(train):
 
 
 # use our dataset and defined transformations
-dataset = RaccoonDataset(root="/content/raccoon_dataset", data_file="/content/raccoon_dataset/data/raccoon_labels.csv",
+dataset = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/10_Images_Adachi", data_file="/content/road_10_labels.csv",
                          transforms=get_transform(train=True))
 
-dataset_test = RaccoonDataset(root="/content/raccoon_dataset",
-                              data_file="/content/raccoon_dataset/data/raccoon_labels.csv",
+dataset_test = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/10_Images_Adachi",
+                              data_file="/content/road_10_labels.csv",
                               transforms=get_transform(train=False))
 
 # split the dataset in train and test set
 torch.manual_seed(1)
 indices = torch.randperm(len(dataset)).tolist()
-dataset = torch.utils.data.Subset(dataset, indices[:-40])
-dataset_test = torch.utils.data.Subset(dataset_test, indices[-40:])
+dataset = torch.utils.data.Subset(dataset, indices[:-5])
+dataset_test = torch.utils.data.Subset(dataset_test, indices[-5:])
+
+print(dataset)
+print(dataset_test)
 
 # define training and validation data loaders
-data_loader = torch.utils.data.DataLoader(dataset, batch_size=2, shuffle=True, num_workers=4,
-                                          collate_fn=utils.collate_fn)
+data_loader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=True, num_workers=4, collate_fn=utils.collate_fn)
 
-data_loader_test = torch.utils.data.DataLoader(dataset_test, batch_size=1, shuffle=False, num_workers=4,
-                                               collate_fn=utils.collate_fn)
+data_loader_test = torch.utils.data.DataLoader(dataset_test, batch_size=1, shuffle=False, num_workers=4, collate_fn=utils.collate_fn)
 
 print("We have: {} examples, {} are training and {} testing".format(len(indices), len(dataset), len(dataset_test)))
 
