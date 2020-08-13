@@ -10,14 +10,15 @@ def xml_to_csv(path):
         tree = ET.parse(xml_file)
         root = tree.getroot()
         for member in root.findall('object'):
+            b_box = member.find('bndbox')
             value = (root.find('filename').text,
                      int(root.find('size')[0].text),
                      int(root.find('size')[1].text),
-                     member[0].text,
-                     int(member[1][0].text),
-                     int(member[1][1].text),
-                     int(member[1][2].text),
-                     int(member[1][3].text)
+                     member.find('name').text,
+                     int(b_box[0].text),
+                     int(b_box[1].text),
+                     int(b_box[2].text),
+                     int(b_box[3].text)
                      )
             xml_list.append(value)
     column_name = ['filename', 'width', 'height', 'class', 'xmin', 'ymin', 'xmax', 'ymax']
@@ -26,9 +27,9 @@ def xml_to_csv(path):
 
 
 def main():
-    image_path = os.path.join(os.getcwd(), '/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/10_Annotations_Adachi')
+    image_path = os.path.join(os.getcwd(), '/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/Adachi_selected/Annotations')
     xml_df = xml_to_csv(image_path)
-    xml_df.to_csv('road_10_labels.csv', index=None)
+    xml_df.to_csv('adachi_selected.csv', index=None)
     print('Successfully converted xml to csv.')
 
 
