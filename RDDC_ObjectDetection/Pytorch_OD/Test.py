@@ -35,6 +35,6 @@ def visual_image(index_of_image):
 def main():
     for index in range(len(dataset_test)):
         visual_image(index)
-        print(index, 'is done')
+        print(index+1, ' prediction is done')
 
 main()
