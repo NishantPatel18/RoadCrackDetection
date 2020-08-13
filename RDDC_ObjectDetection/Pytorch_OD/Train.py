@@ -57,7 +57,8 @@ class RaccoonDataset(torch.utils.data.Dataset):
         return len(self.imgs)
 
 
-dataset = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/10_Images_Adachi", data_file="/content/road_10_labels.csv")
+dataset = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/10_Images_Adachi",
+                         data_file="/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_10_labels.csv")
 dataset.__getitem__(0)
 
 
@@ -84,18 +85,19 @@ def get_transform(train):
 
 
 # use our dataset and defined transformations
-dataset = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/10_Images_Adachi", data_file="/content/road_10_labels.csv",
+dataset = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/10_Images_Adachi",
+                         data_file="/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_10_labels.csv",
                          transforms=get_transform(train=True))
 
 dataset_test = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/10_Images_Adachi",
-                              data_file="/content/road_10_labels.csv",
+                              data_file="/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_10_labels.csv",
                               transforms=get_transform(train=False))
 
 # split the dataset in train and test set
 torch.manual_seed(1)
 indices = torch.randperm(len(dataset)).tolist()
-dataset = torch.utils.data.Subset(dataset, indices[:-5])
-dataset_test = torch.utils.data.Subset(dataset_test, indices[-5:])
+dataset = torch.utils.data.Subset(dataset, indices[:7])
+dataset_test = torch.utils.data.Subset(dataset_test, indices[7:])
 
 print(dataset)
 print(dataset_test)
@@ -110,7 +112,7 @@ print("We have: {} examples, {} are training and {} testing".format(len(indices)
 device = torch.device('cuda')
 
 # our dataset has two classes only - raccoon and not racoon
-num_classes = 2
+num_classes = 5
 
 # get the model using our helper function
 model = get_model(num_classes)

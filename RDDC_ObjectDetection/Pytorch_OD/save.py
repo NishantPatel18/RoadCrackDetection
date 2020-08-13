@@ -1,2 +1,2 @@
-os.mkdir("/content/Pytorch_OD/raccoon/")
-torch.save(model.state_dict(), "/content/Pytorch_OD/raccoon/model")
+os.mkdir("/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_crack/")
+torch.save(model.state_dict(), "/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_crack/model")
