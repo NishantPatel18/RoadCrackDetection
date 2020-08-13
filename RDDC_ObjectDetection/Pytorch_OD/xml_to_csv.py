@@ -15,10 +15,10 @@ def xml_to_csv(path):
                      int(root.find('size')[0].text),
                      int(root.find('size')[1].text),
                      member.find('name').text,
-                     int(b_box[0].text),
-                     int(b_box[1].text),
-                     int(b_box[2].text),
-                     int(b_box[3].text)
+                     int(b_box.find('xmin').text),
+                     int(b_box.find('ymin').text),
+                     int(b_box.find('xmax').text),
+                     int(b_box.find('ymax').text)
                      )
             xml_list.append(value)
     column_name = ['filename', 'width', 'height', 'class', 'xmin', 'ymin', 'xmax', 'ymax']
