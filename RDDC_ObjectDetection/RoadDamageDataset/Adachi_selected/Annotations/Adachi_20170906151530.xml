@@ -1,0 +1,27 @@
+<annotation>
+    <folder>Adachi</folder>
+    <filename>Adachi_20170906151530.jpg</filename>
+    <size>
+        <width>600</width>
+        <height>600</height>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>D01</name>
+        <bndbox>
+            <xmin>440</xmin>
+            <ymin>424</ymin>
+            <xmax>593</xmax>
+            <ymax>595</ymax>
+        </bndbox>
+    </object>
+    <object>
+        <name>D20</name>
+        <bndbox>
+            <xmin>316</xmin>
+            <ymin>344</ymin>
+            <xmax>454</xmax>
+            <ymax>465</ymax>
+        </bndbox>
+    </object>
+</annotation>
