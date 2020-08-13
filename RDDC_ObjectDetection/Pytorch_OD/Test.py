@@ -1,5 +1,8 @@
-loaded_model = get_model(num_classes=2)
-loaded_model.load_state_dict(torch.load("/content/Pytorch_OD/raccoon/model"))
+from PIL import Image
+from PIL import ImageDraw
+
+loaded_model = get_model(num_classes=5)
+loaded_model.load_state_dict(torch.load("/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_crack/model"))
 
 idx = 0
 img, _ = dataset_test[idx]
@@ -23,7 +26,8 @@ for element in range(len(prediction[0]["boxes"])):
     boxes = prediction[0]["boxes"][element].cpu().numpy()
     score = np.round(prediction[0]["scores"][element].cpu().numpy(), decimals=4)
 
-    if score > 0.8:
+    # need to change from 0.1 to 0.9 after we trained with many images
+    if score > 0.1:
         draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="red", width=3)
         draw.text((boxes[0], boxes[1]), text=str(score))
 
