@@ -1,3 +1,5 @@
+%cd /content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD
+
 import os
 import numpy as np
 import torch
@@ -57,8 +59,8 @@ class RaccoonDataset(torch.utils.data.Dataset):
         return len(self.imgs)
 
 
-dataset = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/10_Images_Adachi",
-                         data_file="/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_10_labels.csv")
+dataset = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/Adachi_100",
+                         data_file="/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/adachi_selected.csv")
 dataset.__getitem__(0)
 
 
@@ -85,34 +87,36 @@ def get_transform(train):
 
 
 # use our dataset and defined transformations
-dataset = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/10_Images_Adachi",
-                         data_file="/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_10_labels.csv",
+dataset = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/Adachi_100",
+                         data_file="/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/adachi_selected.csv",
                          transforms=get_transform(train=True))
 
-dataset_test = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/10_Images_Adachi",
-                              data_file="/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_10_labels.csv",
+dataset_test = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/Adachi_100",
+                              data_file="/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/adachi_selected.csv",
                               transforms=get_transform(train=False))
 
 # split the dataset in train and test set
 torch.manual_seed(1)
+# define the number of train
+num_train = 70
 indices = torch.randperm(len(dataset)).tolist()
-dataset = torch.utils.data.Subset(dataset, indices[:7])
-dataset_test = torch.utils.data.Subset(dataset_test, indices[7:])
+dataset = torch.utils.data.Subset(dataset, indices[:num_train])
+dataset_test = torch.utils.data.Subset(dataset_test, indices[num_train:])
 
 print(dataset)
 print(dataset_test)
 
 # define training and validation data loaders
-data_loader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=True, num_workers=4, collate_fn=utils.collate_fn)
+data_loader = torch.utils.data.DataLoader(dataset, batch_size=2, shuffle=True, num_workers=4, collate_fn=utils.collate_fn)
 
-data_loader_test = torch.utils.data.DataLoader(dataset_test, batch_size=1, shuffle=False, num_workers=4, collate_fn=utils.collate_fn)
+data_loader_test = torch.utils.data.DataLoader(dataset_test, batch_size=2, shuffle=False, num_workers=4, collate_fn=utils.collate_fn)
 
-print("We have: {} examples, {} are training and {} testing".format(len(indices), len(dataset), len(dataset_test)))
+print("We have: {} examples, {} are training and {} are testing".format(len(indices), len(dataset), len(dataset_test)))
 
 device = torch.device('cuda')
 
 # our dataset has two classes only - raccoon and not racoon
-num_classes = 5
+num_classes = 8
 
 # get the model using our helper function
 model = get_model(num_classes)
@@ -129,10 +133,11 @@ optimizer = torch.optim.SGD(params, lr=0.005, momentum=0.9, weight_decay=0.0005)
 lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
 
 # let's train it for 10 epochs
-num_epochs = 2
+num_epochs = 10
 
 for epoch in range(num_epochs):
     # train for one epoch, printing every 10 iterations
+    # change print freq to display 1 by 1
     train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=10)
 
     # update the learning rate
