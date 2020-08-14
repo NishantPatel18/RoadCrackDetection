@@ -11,10 +11,11 @@ import utils
 
 
 def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq):
+    epoch_to_show = epoch + 1
     model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
-    header = 'Epoch: [{}]'.format(epoch)
+    header = 'Epoch: [{}]'.format(epoch_to_show)
 
     lr_scheduler = None
     if epoch == 0:
