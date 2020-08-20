@@ -8,7 +8,7 @@ from PIL import Image
 import pandas as pd
 
 import torchvision
-from torchvision.models.detection.keypoint_rcnn import KeypointRCNNPredictor
+from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
 from engine import train_one_epoch, evaluate
 import utils
 import transforms as T
@@ -66,11 +66,11 @@ dataset.__getitem__(0)
 
 def get_model(num_classes):
     # load an object detection model pre-trained on COCO
-    model = torchvision.models.detection.keypointrcnn_resnet50_fpn(pretrained=True)
+    model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
     # get the number of input features for the classifier
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     # replace the pre-trained head with a new on
-    model.roi_heads.box_predictor = KeypointRCNNPredictor(in_features, num_classes)
+    model.roi_heads.box_predictor = MaskRCNNPredictor(in_features, num_classes)
 
     return model
 
