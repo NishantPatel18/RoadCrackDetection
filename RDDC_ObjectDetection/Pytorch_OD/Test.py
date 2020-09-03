@@ -1,5 +1,6 @@
 from PIL import Image
 from PIL import ImageDraw
+from IOU import get_iou
 
 loaded_model = get_model(num_classes=8)
 loaded_model.load_state_dict(torch.load("/content/drive/My Drive/Models/model_all_cities_BS14"))
@@ -14,6 +15,7 @@ def visual_image(index_of_image):
     Precision = 0
     Recall = 0
     F1_score = 0
+    iou_array = []
 
     img, _ = dataset_test[index_of_image]
     # print(dataset_test[index_of_image])
@@ -35,23 +37,31 @@ def visual_image(index_of_image):
         # print(label_boxes[elem])
         draw.rectangle([(label_boxes[elem][0], label_boxes[elem][1]), (label_boxes[elem][2], label_boxes[elem][3])],
                        outline="green", width=3)
+        # draw.text((label_boxes[elem][0], label_boxes[elem][1]), text=str('Hi'))
 
     for element in range(len(prediction[0]["boxes"])):
         # print(prediction[0]["boxes"])
         boxes = prediction[0]["boxes"][element].cpu().numpy()
-        score = np.round(prediction[0]["scores"][element].cpu().numpy(), decimals=4)
+        confidence = np.round(prediction[0]["scores"][element].cpu().numpy(), decimals=4)
+        # print(prediction[0]["boxes"][element])
 
-        if score >= 0.9:
+        if confidence >= 0.7:
             draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="red", width=3)
-            draw.text((boxes[0], boxes[1]), text=str(score))
-            num_cracks += 1
-            num_total_cracks += 1
+            draw.text((boxes[0], boxes[1]), text=str(confidence))
 
-        # elif (score > 0.7 and score <= 0.9):
-        #     draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="blue", width=3)
-        #     draw.text((boxes[0], boxes[1]), text=str(score))
-        #     num_cracks += 1
-        #     num_total_cracks +=1
+            max_iou = 0
+
+            for box in range(len(label_boxes)):
+                draft_cal_iou = get_iou(prediction[0]["boxes"][element], label_boxes[box])
+                cal_iou = draft_cal_iou.data.cpu().numpy()
+                if (cal_iou > max_iou):
+                    max_iou = cal_iou
+                    # print('max_iou', max_iou)
+
+            if (max_iou >= 0.5):
+                num_cracks += 1
+                num_total_cracks += 1
+                iou_array.append(max_iou)
 
     if (num_groundtruth_obj > num_cracks):
         FN = num_groundtruth_obj - num_cracks
@@ -88,7 +98,7 @@ def visual_image(index_of_image):
     print('Recall', round(Recall, 4))
     print('F1 score', round(F1_score, 4))
 
-    return num_total_cracks, Precision, Recall, F1_score
+    return num_total_cracks, Precision, Recall, F1_score, iou_array
 
 
 def main():
@@ -100,7 +110,7 @@ def main():
     total_average_recall = 0
     total_average_f1 = 0
     for index in range(len(dataset_test)):
-        num_total_cracks, Precision, Recall, F1_score = visual_image(index)
+        num_total_cracks, Precision, Recall, F1_score, iou_array = visual_image(index)
         total += num_total_cracks
         total_precision += Precision
         total_recall += Recall
@@ -113,6 +123,10 @@ def main():
             print(index + 1, 'predictions are done')
         else:
             print(index + 1, 'prediction is done')
+
+        for ind in range(len(iou_array)):
+            iou = float(iou_array[ind])
+            print('IOU:', round(iou, 4))
 
     print('There are', total, 'cracks in', len(dataset_test), 'tested images')
     print('Total average precision is', round(total_average_precision, 4))
