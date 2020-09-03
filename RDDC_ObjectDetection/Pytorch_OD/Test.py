@@ -9,6 +9,7 @@ loaded_model.load_state_dict(torch.load("/content/drive/My Drive/Models/model_al
 def visual_image(index_of_image):
     num_total_cracks = 0
     num_cracks = 0
+    num_passed_iou = 0
     TP = 0
     FP = 0
     FN = 0
@@ -26,6 +27,8 @@ def visual_image(index_of_image):
 
     with torch.no_grad():
         prediction = loaded_model([img])
+
+    # print(prediction)
 
     image = Image.fromarray(img.mul(255).permute(1, 2, 0).byte().numpy())
     draw = ImageDraw.Draw(image)
@@ -48,6 +51,8 @@ def visual_image(index_of_image):
         if confidence >= 0.7:
             draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="red", width=3)
             draw.text((boxes[0], boxes[1]), text=str(confidence))
+            num_cracks += 1
+            num_total_cracks += 1
 
             max_iou = 0
 
@@ -59,18 +64,16 @@ def visual_image(index_of_image):
                     # print('max_iou', max_iou)
 
             if (max_iou >= 0.5):
-                num_cracks += 1
-                num_total_cracks += 1
+                num_passed_iou += 1
                 iou_array.append(max_iou)
 
-    if (num_groundtruth_obj > num_cracks):
-        FN = num_groundtruth_obj - num_cracks
-        TP = num_cracks
-    elif (num_cracks > num_groundtruth_obj):
-        FP = num_cracks - num_groundtruth_obj
-        TP = num_groundtruth_obj
-    else:
-        TP = num_cracks
+    # print('****************************************************************')
+    # print(num_groundtruth_obj)
+    # print(num_cracks)
+    # print(num_passed_iou)
+    TP = num_passed_iou
+    FP = num_cracks - num_passed_iou
+    FN = num_groundtruth_obj - num_passed_iou
 
     if ((TP == 0 and FP == 0) or (TP == 0 and FN == 0)):
         pass
