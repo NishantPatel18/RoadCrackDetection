@@ -1,6 +1,7 @@
 from PIL import Image
 from PIL import ImageDraw
 from IOU import get_iou
+import matplotlib.pyplot as plt
 
 loaded_model = get_model(num_classes=8)
 loaded_model.load_state_dict(torch.load("/content/drive/My Drive/Models/model_all_cities_BS14"))
@@ -13,8 +14,10 @@ def visual_image(index_of_image):
     TP = 0
     FP = 0
     FN = 0
+    TN = 0
     Precision = 0
     Recall = 0
+    FPR = 0
     F1_score = 0
     iou_array = []
 
@@ -66,6 +69,8 @@ def visual_image(index_of_image):
             if (max_iou >= 0.5):
                 num_passed_iou += 1
                 iou_array.append(max_iou)
+        else:
+            TN += 1
 
     # print('****************************************************************')
     # print(num_groundtruth_obj)
@@ -75,11 +80,12 @@ def visual_image(index_of_image):
     FP = num_cracks - num_passed_iou
     FN = num_groundtruth_obj - num_passed_iou
 
-    if ((TP == 0 and FP == 0) or (TP == 0 and FN == 0)):
+    if ((TP == 0 and FP == 0) or (TP == 0 and FN == 0) or (TN == 0 and FP == 0)):
         pass
     else:
         Precision = TP / (TP + FP)
         Recall = TP / (TP + FN)
+        FPR = FP / (TN + FP)
 
     if (Precision == 0 and Recall == 0):
         pass
@@ -97,31 +103,40 @@ def visual_image(index_of_image):
     print('TP', TP)
     print('FP', FP)
     print('FN', FN)
-    print('Precision', round(Precision, 4))
-    print('Recall', round(Recall, 4))
-    print('F1 score', round(F1_score, 4))
+    print('TN', TN)
+    # print('FPR', round(FPR, 4))
+    # print('Precision', round(Precision, 4))
+    # print('Recall', round(Recall, 4))
+    # print('F1 score', round(F1_score, 4))
 
-    return num_total_cracks, Precision, Recall, F1_score, iou_array
+    return Recall, FPR, num_total_cracks, iou_array, TP, FP, FN, TN
 
 
 def main():
     total = 0
-    total_precision = 0
-    total_recall = 0
-    total_f1 = 0
-    total_average_precision = 0
-    total_average_recall = 0
-    total_average_f1 = 0
+    Precision = 0
+    TPR_Recall = 0
+    TPR_array = []
+    FPR_array = []
+    F1_score = 0
+    input_Recall = 0
+    input_FPR = 0
+    TP = 0
+    FP = 0
+    FN = 0
+    TN = 0
+
     for index in range(len(dataset_test)):
-        num_total_cracks, Precision, Recall, F1_score, iou_array = visual_image(index)
+        each_Recall, each_FPR, num_total_cracks, iou_array, each_TP, each_FP, each_FN, each_TN = visual_image(index)
         total += num_total_cracks
-        total_precision += Precision
-        total_recall += Recall
-        total_f1 += F1_score
-        num_of_images = len(dataset_test)
-        total_average_precision = total_precision / num_of_images
-        total_average_recall = total_recall / num_of_images
-        total_average_f1 = total_f1 / num_of_images
+        input_Recall += each_Recall
+        input_FPR += each_FPR
+        TPR_array.append(input_Recall)
+        FPR_array.append(input_FPR)
+        TP += each_TP
+        FP += each_FP
+        FN += each_FN
+        TN += each_TN
         if index > 0:
             print(index + 1, 'predictions are done')
         else:
@@ -131,10 +146,31 @@ def main():
             iou = float(iou_array[ind])
             print('IOU:', round(iou, 4))
 
+    if ((TP == 0 and FP == 0) or (TP == 0 and FN == 0) or (TN == 0 and FP == 0)):
+        pass
+    else:
+        Precision = TP / (TP + FP)
+        TPR_Recall = TP / (TP + FN)
+        FPR = FP / (TN + FP)
+
+    if (Precision == 0 and TPR_Recall == 0):
+        pass
+    else:
+        F1_score = 2 * ((Precision * TPR_Recall) / (Precision + TPR_Recall))
+
     print('There are', total, 'cracks in', len(dataset_test), 'tested images')
-    print('Total average precision is', round(total_average_precision, 4))
-    print('Total average recall is', round(total_average_recall, 4))
-    print('Total average F1 score', round(total_average_f1, 4))
+    print('Precision is', round(Precision, 4))
+    print('Recall is', round(TPR_Recall, 4))
+    print('F1 score', round(F1_score, 4))
+    # print(TPR_array)
+    # print(FPR_array)
+
+    # Title
+    plt.title('ROC Plot')
+    # Axis labels
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.plot(FPR_array, TPR_array)
 
 
 main()
