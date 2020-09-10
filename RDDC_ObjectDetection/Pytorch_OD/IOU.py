@@ -12,14 +12,14 @@ def get_iou(pred_box, gt_box):
     the  left-down coordinate of  pred_box:(pred_box[0], pred_box[1])
     the  right-up coordinate of  pred_box:(pred_box[2], pred_box[3])
     """
-    # 1.get the coordinate of intersections
-    inter_xmin = max(pred_box[0], gt_box[0])
-    inter_ymin = max(pred_box[1], gt_box[1])
-    inter_xmax = min(pred_box[2], gt_box[2])
-    inter_ymax = min(pred_box[3], gt_box[3])
+    # 1.get the coordinate of inters
+    ixmin = max(pred_box[0], gt_box[0])
+    iymin = max(pred_box[1], gt_box[1])
+    ixmax = min(pred_box[2], gt_box[2])
+    iymax = min(pred_box[3], gt_box[3])
 
-    iw = np.maximum(inter_ixmax - inter_ixmin+1., 0.)
-    ih = np.maximum(inter_iymax - inter_iymin+1., 0.)
+    iw = np.maximum(ixmax-ixmin+1., 0.)
+    ih = np.maximum(iymax-iymin+1., 0.)
 
     # 2. calculate the area of inters
     inters = iw*ih
