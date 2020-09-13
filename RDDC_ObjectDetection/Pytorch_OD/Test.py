@@ -4,7 +4,8 @@ from IOU import get_iou
 import matplotlib.pyplot as plt
 
 loaded_model = get_model(num_classes=8)
-loaded_model.load_state_dict(torch.load("/content/drive/My Drive/Models/model_all_cities_BS14"))
+# loaded_model.load_state_dict(torch.load("/content/drive/My Drive/Models/model_all_cities_BS14"))
+loaded_model.load_state_dict(torch.load("/content/drive/My Drive/model_Adachi_100"))
 
 
 def visual_image(index_of_image):
@@ -31,7 +32,7 @@ def visual_image(index_of_image):
     with torch.no_grad():
         prediction = loaded_model([img])
 
-    # print(prediction)
+    print(prediction)
 
     image = Image.fromarray(img.mul(255).permute(1, 2, 0).byte().numpy())
     draw = ImageDraw.Draw(image)
@@ -44,6 +45,28 @@ def visual_image(index_of_image):
         draw.rectangle([(label_boxes[elem][0], label_boxes[elem][1]), (label_boxes[elem][2], label_boxes[elem][3])],
                        outline="green", width=3)
         # draw.text((label_boxes[elem][0], label_boxes[elem][1]), text=str('Hi'))
+
+
+def get_class_name(class_number_input):
+    class_name = ''
+    if (class_number_input == [0]):
+        class_name = 'D00'
+    elif (class_number_input == [1]):
+        class_name = 'D01'
+    elif (class_number_input == [2]):
+        class_name = 'D10'
+    elif (class_number_input == [3]):
+        class_name = 'D11'
+    elif (class_number_input == [4]):
+        class_name = 'D20'
+    elif (class_number_input == [5]):
+        class_name = 'D40'
+    elif (class_number_input == [6]):
+        class_name = 'D43'
+    else:
+        class_name = 'D44'
+
+    return class_name
 
     for element in range(len(prediction[0]["boxes"])):
         # print(prediction[0]["boxes"])
