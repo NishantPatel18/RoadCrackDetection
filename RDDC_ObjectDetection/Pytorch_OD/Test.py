@@ -3,8 +3,7 @@ from IOU import get_iou
 import matplotlib.pyplot as plt
 
 loaded_model = get_model(num_classes=10)
-# loaded_model.load_state_dict(torch.load("/content/drive/My Drive/Models/model_all_cities_BS14"))
-loaded_model.load_state_dict(torch.load("/content/drive/My Drive/Models/no_zero_model_detect_classify"))
+loaded_model.load_state_dict(torch.load("/content/drive/My Drive/model_detect_classify"))
 
 
 def get_class_name(class_number_input):
@@ -49,10 +48,9 @@ def visual_image(index_of_image):
     # font = ImageFont.truetype("Arial", 20)
 
     img, _ = dataset_test[index_of_image]
-    # print(dataset_test[index_of_image])
     label_boxes = np.array(dataset_test[index_of_image][1]["boxes"])
     label_classes = np.array(dataset_test[index_of_image][1]["labels"])
-    print(label_classes)
+    # print(label_classes)
     class_list = label_classes.tolist()
 
     # put the model in evaluation mode
@@ -63,7 +61,7 @@ def visual_image(index_of_image):
 
     # print(prediction)
     pred_class_list = prediction[0]["labels"].tolist()
-    print(pred_class_list)
+    # print(pred_class_list)
 
     image = Image.fromarray(img.mul(255).permute(1, 2, 0).byte().numpy())
     draw = ImageDraw.Draw(image)
@@ -73,7 +71,7 @@ def visual_image(index_of_image):
     # draw groundtruth
     for elem in range(len(label_boxes)):
         # print(label_boxes)
-        print(label_classes[elem])
+        # print(label_classes[elem])
         draw.rectangle([(label_boxes[elem][0], label_boxes[elem][1]), (label_boxes[elem][2], label_boxes[elem][3])],
                        outline="green", width=3)
         draw.text((label_boxes[elem][0], label_boxes[elem][1]), text=str(get_class_name(class_list[elem])))
@@ -87,7 +85,9 @@ def visual_image(index_of_image):
         if confidence >= 0.7:
             draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="red", width=3)
             draw.text((boxes[0], boxes[1]), text=(get_class_name(pred_class_list[element])))
-            print(get_class_name(pred_class_list[element]))
+            # print(get_class_name(pred_class_list[element]))
+            prediction_class_element = pred_class_list[element]
+            # print(prediction_class_element)
             num_cracks += 1
             num_total_cracks += 1
 
@@ -100,7 +100,7 @@ def visual_image(index_of_image):
                     max_iou = cal_iou
                     # print('max_iou', max_iou)
 
-            if (max_iou >= 0.5):
+            if (max_iou >= 0.5 and prediction_class_element == class_list[box]):
                 num_passed_iou += 1
                 iou_array.append(max_iou)
         else:
