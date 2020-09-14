@@ -1,11 +1,36 @@
-from PIL import Image
-from PIL import ImageDraw
+from PIL import Image, ImageFont, ImageDraw
 from IOU import get_iou
 import matplotlib.pyplot as plt
 
-loaded_model = get_model(num_classes=8)
+loaded_model = get_model(num_classes=10)
 # loaded_model.load_state_dict(torch.load("/content/drive/My Drive/Models/model_all_cities_BS14"))
-loaded_model.load_state_dict(torch.load("/content/drive/My Drive/model_Adachi_100"))
+loaded_model.load_state_dict(torch.load("/content/drive/My Drive/Models/no_zero_model_detect_classify"))
+
+
+def get_class_name(class_number_input):
+    class_name = ''
+    if (class_number_input == 1):
+        class_name = 'D00'
+    elif (class_number_input == 2):
+        class_name = 'D01'
+    elif (class_number_input == 3):
+        class_name = 'D10'
+    elif (class_number_input == 4):
+        class_name = 'D11'
+    elif (class_number_input == 5):
+        class_name = 'D20'
+    elif (class_number_input == 6):
+        class_name = 'D30'
+    elif (class_number_input == 7):
+        class_name = 'D40'
+    elif (class_number_input == 8):
+        class_name = 'D43'
+    elif (class_number_input == 9):
+        class_name = 'D44'
+    else:
+        class_name = 'NO'
+
+    return class_name
 
 
 def visual_image(index_of_image):
@@ -21,10 +46,14 @@ def visual_image(index_of_image):
     FPR = 0
     F1_score = 0
     iou_array = []
+    # font = ImageFont.truetype("Arial", 20)
 
     img, _ = dataset_test[index_of_image]
     # print(dataset_test[index_of_image])
     label_boxes = np.array(dataset_test[index_of_image][1]["boxes"])
+    label_classes = np.array(dataset_test[index_of_image][1]["labels"])
+    print(label_classes)
+    class_list = label_classes.tolist()
 
     # put the model in evaluation mode
     loaded_model.eval()
@@ -32,7 +61,9 @@ def visual_image(index_of_image):
     with torch.no_grad():
         prediction = loaded_model([img])
 
-    print(prediction)
+    # print(prediction)
+    pred_class_list = prediction[0]["labels"].tolist()
+    print(pred_class_list)
 
     image = Image.fromarray(img.mul(255).permute(1, 2, 0).byte().numpy())
     draw = ImageDraw.Draw(image)
@@ -41,32 +72,11 @@ def visual_image(index_of_image):
 
     # draw groundtruth
     for elem in range(len(label_boxes)):
-        # print(label_boxes[elem])
+        # print(label_boxes)
+        print(label_classes[elem])
         draw.rectangle([(label_boxes[elem][0], label_boxes[elem][1]), (label_boxes[elem][2], label_boxes[elem][3])],
                        outline="green", width=3)
-        # draw.text((label_boxes[elem][0], label_boxes[elem][1]), text=str('Hi'))
-
-
-def get_class_name(class_number_input):
-    class_name = ''
-    if (class_number_input == [0]):
-        class_name = 'D00'
-    elif (class_number_input == [1]):
-        class_name = 'D01'
-    elif (class_number_input == [2]):
-        class_name = 'D10'
-    elif (class_number_input == [3]):
-        class_name = 'D11'
-    elif (class_number_input == [4]):
-        class_name = 'D20'
-    elif (class_number_input == [5]):
-        class_name = 'D40'
-    elif (class_number_input == [6]):
-        class_name = 'D43'
-    else:
-        class_name = 'D44'
-
-    return class_name
+        draw.text((label_boxes[elem][0], label_boxes[elem][1]), text=str(get_class_name(class_list[elem])))
 
     for element in range(len(prediction[0]["boxes"])):
         # print(prediction[0]["boxes"])
@@ -76,7 +86,8 @@ def get_class_name(class_number_input):
 
         if confidence >= 0.7:
             draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="red", width=3)
-            draw.text((boxes[0], boxes[1]), text=str(confidence))
+            draw.text((boxes[0], boxes[1]), text=(get_class_name(pred_class_list[element])))
+            print(get_class_name(pred_class_list[element]))
             num_cracks += 1
             num_total_cracks += 1
 
@@ -94,6 +105,25 @@ def get_class_name(class_number_input):
                 iou_array.append(max_iou)
         else:
             TN += 1
+
+        # max_iou = 0
+
+        # for box in range(len(label_boxes)):
+        #     draft_cal_iou = get_iou(prediction[0]["boxes"][element], label_boxes[box])
+        #     cal_iou = draft_cal_iou.data.cpu().numpy()
+        #     if (cal_iou > max_iou):
+        #         max_iou = cal_iou
+        #         # print('max_iou', max_iou)
+
+        # if (max_iou >= 0.5):
+        #     num_passed_iou += 1
+        #     iou_array.append(max_iou)
+        #     draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="red", width=3)
+        #     draw.text((boxes[0], boxes[1]), text=(get_class_name(prediction[0]["labels"][element])))
+        #     num_cracks += 1
+        #     num_total_cracks +=1
+        # else:
+        #     TN += 1
 
     # print('****************************************************************')
     # print(num_groundtruth_obj)
@@ -148,8 +178,10 @@ def main():
     FP = 0
     FN = 0
     TN = 0
+    all_tests = len(dataset_test)
+    # some_tests = 20
 
-    for index in range(len(dataset_test)):
+    for index in range(all_tests):
         each_Recall, each_FPR, num_total_cracks, iou_array, each_TP, each_FP, each_FN, each_TN = visual_image(index)
         total += num_total_cracks
         input_Recall += each_Recall

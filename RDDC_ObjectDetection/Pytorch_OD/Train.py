@@ -25,21 +25,25 @@ def parse_one_annot(path_to_data_file, filename):
 def get_class_number(class_input):
     class_number = 0
     if (class_input == ['D00']):
-        class_number = 0
-    elif (class_input == ['D01']):
         class_number = 1
-    elif (class_input == ['D10']):
+    elif (class_input == ['D01']):
         class_number = 2
-    elif (class_input == ['D11']):
+    elif (class_input == ['D10']):
         class_number = 3
-    elif (class_input == ['D20']):
+    elif (class_input == ['D11']):
         class_number = 4
-    elif (class_input == ['D40']):
+    elif (class_input == ['D20']):
         class_number = 5
-    elif (class_input == ['D43']):
+    elif (class_input == ['D30']):
         class_number = 6
-    else:
+    elif (class_input == ['D40']):
         class_number = 7
+    elif (class_input == ['D43']):
+        class_number = 8
+    elif (class_input == ['D44']):
+        class_number = 9
+    else:
+        class_number = 0
 
     return class_number
 
@@ -60,11 +64,15 @@ class RaccoonDataset(torch.utils.data.Dataset):
         boxes = torch.as_tensor(box_list, dtype=torch.float32)
         num_objs = len(box_list)
         class_list = []
+        # print(class_name)
 
         for name in class_name:
+            # print(name)
             number = get_class_number(name)
+            # print(number)
             class_list.append(number)
 
+        # print(class_list)
         class_list_numpy = np.array(class_list)
         labels = torch.as_tensor(class_list_numpy, dtype=torch.int64)
         # labels = torch.ones((num_objs,), dtype=torch.int64)
@@ -128,8 +136,8 @@ dataset_test = RaccoonDataset(
 
 # split the dataset in train and test set
 torch.manual_seed(1)
-# num_train = 9882
-num_train = 6924
+num_train = 9882
+# num_train = 6924
 # num_train = 90
 indices = torch.randperm(len(dataset)).tolist()
 dataset = torch.utils.data.Subset(dataset, indices[:num_train])
@@ -147,7 +155,7 @@ print("We have: {} examples, {} are training and {} are testing".format(len(indi
 device = torch.device('cuda')
 
 # our dataset has two classes only - raccoon and not racoon
-num_classes = 8
+num_classes = 10
 
 # get the model using our helper function
 model = get_model(num_classes)
@@ -177,5 +185,6 @@ for epoch in range(num_epochs):
     # evaluate on the test dataset
     evaluate(model, data_loader_test, device=device)
 
-os.mkdir("/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_crack/")
-torch.save(model.state_dict(), "/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_crack/model")
+# os.mkdir("/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_crack/")
+# torch.save(model.state_dict(), "/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_crack/model")
+torch.save(model.state_dict(), "/content/drive/My Drive/Models/no_zero_model_detect_classify")
