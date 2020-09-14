@@ -1,4 +1,4 @@
-% cd / content / RoadCrackDetection / RDDC_ObjectDetection / Pytorch_OD
+% cd /content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD
 
 import os
 import numpy as np
