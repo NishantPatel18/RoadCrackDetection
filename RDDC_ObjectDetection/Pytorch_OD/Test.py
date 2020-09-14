@@ -3,7 +3,7 @@ from IOU import get_iou
 import matplotlib.pyplot as plt
 
 loaded_model = get_model(num_classes=10)
-loaded_model.load_state_dict(torch.load("/content/drive/My Drive/model_detect_classify"))
+loaded_model.load_state_dict(torch.load("/content/drive/My Drive/Models/model_10_class"))
 
 
 def get_class_name(class_number_input):
@@ -71,7 +71,7 @@ def visual_image(index_of_image):
     # draw groundtruth
     for elem in range(len(label_boxes)):
         # print(label_boxes)
-        # print(label_classes[elem])
+        print('Ground Truth Class', label_classes[elem])
         draw.rectangle([(label_boxes[elem][0], label_boxes[elem][1]), (label_boxes[elem][2], label_boxes[elem][3])],
                        outline="green", width=3)
         draw.text((label_boxes[elem][0], label_boxes[elem][1]), text=str(get_class_name(class_list[elem])))
@@ -83,26 +83,30 @@ def visual_image(index_of_image):
         # print(prediction[0]["boxes"][element])
 
         if confidence >= 0.7:
-            draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="red", width=3)
-            draw.text((boxes[0], boxes[1]), text=(get_class_name(pred_class_list[element])))
+            # draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="red", width=3)
+            # draw.text((boxes[0], boxes[1]), text=(get_class_name(pred_class_list[element])))
             # print(get_class_name(pred_class_list[element]))
             prediction_class_element = pred_class_list[element]
-            # print(prediction_class_element)
+            print('Prediction Class', prediction_class_element)
             num_cracks += 1
             num_total_cracks += 1
 
             max_iou = 0
+            class_name_checking = ''
 
             for box in range(len(label_boxes)):
                 draft_cal_iou = get_iou(prediction[0]["boxes"][element], label_boxes[box])
                 cal_iou = draft_cal_iou.data.cpu().numpy()
                 if (cal_iou > max_iou):
                     max_iou = cal_iou
+                    class_name_checking = class_list[box]
                     # print('max_iou', max_iou)
 
-            if (max_iou >= 0.5 and prediction_class_element == class_list[box]):
+            if (max_iou >= 0.5 and prediction_class_element == class_name_checking):
                 num_passed_iou += 1
                 iou_array.append(max_iou)
+                draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="blue", width=3)
+                draw.text((boxes[0], boxes[1]), text=(get_class_name(pred_class_list[element])))
         else:
             TN += 1
 
@@ -200,6 +204,7 @@ def main():
         for ind in range(len(iou_array)):
             iou = float(iou_array[ind])
             print('IOU:', round(iou, 4))
+            print('*******************')
 
     if ((TP == 0 and FP == 0) or (TP == 0 and FN == 0) or (TN == 0 and FP == 0)):
         pass
