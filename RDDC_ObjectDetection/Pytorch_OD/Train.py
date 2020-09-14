@@ -1,4 +1,4 @@
-%cd /content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD
+% cd /content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD
 
 import os
 import numpy as np
@@ -171,20 +171,20 @@ optimizer = torch.optim.SGD(params, lr=0.005, momentum=0.9, weight_decay=0.0005)
 # 10x every 3 epochs
 lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
 
-# # let's train it for 10 epochs
-# num_epochs = 10
+# let's train it for 10 epochs
+num_epochs = 10
 
-# for epoch in range(num_epochs):
-#     # train for one epoch, printing every 10 iterations
-#     # change print freq to display 1 by 1
-#     train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=10)
+for epoch in range(num_epochs):
+    # train for one epoch, printing every 10 iterations
+    # change print freq to display 1 by 1
+    train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=10)
 
-#     # update the learning rate
-#     lr_scheduler.step()
+    # update the learning rate
+    lr_scheduler.step()
 
-#     # evaluate on the test dataset
-#     evaluate(model, data_loader_test, device=device)
+    # evaluate on the test dataset
+    evaluate(model, data_loader_test, device=device)
 
-# # os.mkdir("/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_crack/")
-# # torch.save(model.state_dict(), "/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_crack/model")
-# torch.save(model.state_dict(), "/content/drive/My Drive/Models/no_zero_model_detect_classify")
+# os.mkdir("/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_crack/")
+# torch.save(model.state_dict(), "/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/road_crack/model")
+torch.save(model.state_dict(), "/content/drive/My Drive/Models/no_zero_model_detect_classify")
