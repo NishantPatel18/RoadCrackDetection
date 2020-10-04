@@ -235,9 +235,14 @@ def main():
         pass
     else:
         F1_score = 2 * ((Precision * TPR_Recall) / (Precision + TPR_Recall))
-    model_accuracy = (TP + TN) / (TP + TN + FP + FN)
-
+    total_CM = TP + TN + FP + FN
+    model_accuracy = (TP + TN) / total_CM
     print('There are', total, 'cracks in', len(dataset_test), 'tested images')
+    print('Confusion Matrix:')
+    print('True Postive is', round(TP, 4))
+    print('True Negative is', round(TN, 4))
+    print('False Postive is', round(FP, 4))
+    print('False Negative is', round(FN, 4))
     print('Accuracy is', round(model_accuracy, 4))
     print('Precision is', round(Precision, 4))
     print('Recall is', round(TPR_Recall, 4))
