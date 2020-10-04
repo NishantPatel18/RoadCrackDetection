@@ -45,6 +45,7 @@ def visual_image(index_of_image):
     FPR = 0
     F1_score = 0
     iou_array = []
+    extra_FP = 0
     # font = ImageFont.truetype("Arial", 20)
 
     img, _ = dataset_test[index_of_image]
@@ -71,7 +72,7 @@ def visual_image(index_of_image):
     # draw groundtruth
     for elem in range(len(label_boxes)):
         # print(label_boxes)
-        print('Ground Truth Class', label_classes[elem])
+        # print('Ground Truth Class', label_classes[elem])
         draw.rectangle([(label_boxes[elem][0], label_boxes[elem][1]), (label_boxes[elem][2], label_boxes[elem][3])],
                        outline="green", width=3)
         draw.text((label_boxes[elem][0], label_boxes[elem][1]), text=str(get_class_name(class_list[elem])))
@@ -83,11 +84,11 @@ def visual_image(index_of_image):
         # print(prediction[0]["boxes"][element])
 
         if confidence >= 0.7:
-            # draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="red", width=3)
+            # draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="blue", width=3)
             # draw.text((boxes[0], boxes[1]), text=(get_class_name(pred_class_list[element])))
             # print(get_class_name(pred_class_list[element]))
             prediction_class_element = pred_class_list[element]
-            print('Prediction Class', prediction_class_element)
+            # print('Prediction Class', prediction_class_element)
             num_cracks += 1
             num_total_cracks += 1
 
@@ -105,7 +106,7 @@ def visual_image(index_of_image):
             if (max_iou >= 0.5 and prediction_class_element == class_name_checking):
                 num_passed_iou += 1
                 iou_array.append(max_iou)
-                draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="blue", width=3)
+                draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="red", width=3)
                 draw.text((boxes[0], boxes[1]), text=(get_class_name(pred_class_list[element])))
         else:
             TN += 1
@@ -133,9 +134,18 @@ def visual_image(index_of_image):
     # print(num_groundtruth_obj)
     # print(num_cracks)
     # print(num_passed_iou)
-    TP = num_passed_iou
-    FP = num_cracks - num_passed_iou
-    FN = num_groundtruth_obj - num_passed_iou
+    if (num_passed_iou > num_groundtruth_obj):
+        extra_FP = num_passed_iou - num_groundtruth_obj
+        FN = 0
+    else:
+        FN = num_groundtruth_obj - num_passed_iou
+    if (num_passed_iou > num_groundtruth_obj):
+        extra_FP = num_passed_iou - num_groundtruth_obj
+        TP = num_passed_iou - extra_FP
+    else:
+        TP = num_passed_iou
+    # TP = num_passed_iou
+    FP = (num_cracks - num_passed_iou) + extra_FP
 
     if ((TP == 0 and FP == 0) or (TP == 0 and FN == 0) or (TN == 0 and FP == 0)):
         pass
@@ -201,10 +211,18 @@ def main():
         else:
             print(index + 1, 'prediction is done')
 
+        if len(iou_array) <= 0:
+            pass
+        elif len(iou_array) == 1:
+            print('IOU of the bounding box of detected crack is')
+        else:
+            print('IOUs of the bounding boxes of detected cracks are')
+
         for ind in range(len(iou_array)):
             iou = float(iou_array[ind])
             print('IOU:', round(iou, 4))
-            print('*******************')
+
+        print('-----------------------------------------------------------------------------')
 
     if ((TP == 0 and FP == 0) or (TP == 0 and FN == 0) or (TN == 0 and FP == 0)):
         pass
@@ -217,8 +235,10 @@ def main():
         pass
     else:
         F1_score = 2 * ((Precision * TPR_Recall) / (Precision + TPR_Recall))
+    model_accuracy = (TP + TN) / (TP + TN + FP + FN)
 
     print('There are', total, 'cracks in', len(dataset_test), 'tested images')
+    print('Accuracy is', round(model_accuracy, 4))
     print('Precision is', round(Precision, 4))
     print('Recall is', round(TPR_Recall, 4))
     print('F1 score', round(F1_score, 4))
