@@ -6,6 +6,31 @@ loaded_model = get_model(num_classes=10)
 loaded_model.load_state_dict(torch.load("/content/drive/My Drive/Models/model_10_class"))
 
 
+def getTPR_FPR(TP, TN, FP, FN):
+    TPR = 0
+    FPR = 0
+    if (TP == 0 and FN == 0):
+        pass
+    else:
+        TPR = TP / (TP + FN)
+
+    if (TN == 0 and FP == 0):
+        pass
+    else:
+        FPR = FP / (TN + FP)
+
+    return TPR, FPR
+
+
+def remove_items_from_list(my_list, temp):
+    dup_list = [item for item in temp if item in my_list]
+
+    for ele in dup_list:
+        my_list.remove(ele)
+
+    return my_list
+
+
 def get_class_name(class_number_input):
     class_name = ''
     if (class_number_input == 1):
@@ -45,8 +70,69 @@ def visual_image(index_of_image):
     FPR = 0
     F1_score = 0
     iou_array = []
+    iou_passed_class_array = []
+    groundtruth_class_array = []
     extra_FP = 0
-    # font = ImageFont.truetype("Arial", 20)
+    D00_TP = 0
+    D01_TP = 0
+    D10_TP = 0
+    D11_TP = 0
+    D20_TP = 0
+    D30_TP = 0
+    D40_TP = 0
+    D43_TP = 0
+    D44_TP = 0
+    NO_TP = 0
+    D00_TN = 0
+    D01_TN = 0
+    D10_TN = 0
+    D11_TN = 0
+    D20_TN = 0
+    D30_TN = 0
+    D40_TN = 0
+    D43_TN = 0
+    D44_TN = 0
+    NO_TN = 0
+    D00_FP = 0
+    D01_FP = 0
+    D10_FP = 0
+    D11_FP = 0
+    D20_FP = 0
+    D30_FP = 0
+    D40_FP = 0
+    D43_FP = 0
+    D44_FP = 0
+    NO_FP = 0
+    D00_FN = 0
+    D01_FN = 0
+    D10_FN = 0
+    D11_FN = 0
+    D20_FN = 0
+    D30_FN = 0
+    D40_FN = 0
+    D43_FN = 0
+    D44_FN = 0
+    NO_FN = 0
+    D00_TPR = 0
+    D01_TPR = 0
+    D10_TPR = 0
+    D11_TPR = 0
+    D20_TPR = 0
+    D30_TPR = 0
+    D40_TPR = 0
+    D43_TPR = 0
+    D44_TPR = 0
+    NO_TPR = 0
+    D00_FPR = 0
+    D01_FPR = 0
+    D10_FPR = 0
+    D11_FPR = 0
+    D20_FPR = 0
+    D30_FPR = 0
+    D40_FPR = 0
+    D43_FPR = 0
+    D44_FPR = 0
+    NO_FPR = 0
 
     img, _ = dataset_test[index_of_image]
     label_boxes = np.array(dataset_test[index_of_image][1]["boxes"])
@@ -76,6 +162,7 @@ def visual_image(index_of_image):
         draw.rectangle([(label_boxes[elem][0], label_boxes[elem][1]), (label_boxes[elem][2], label_boxes[elem][3])],
                        outline="green", width=3)
         draw.text((label_boxes[elem][0], label_boxes[elem][1]), text=str(get_class_name(class_list[elem])))
+        groundtruth_class_array.append(class_list[elem])
 
     for element in range(len(prediction[0]["boxes"])):
         # print(prediction[0]["boxes"])
@@ -106,10 +193,72 @@ def visual_image(index_of_image):
             if (max_iou >= 0.5 and prediction_class_element == class_name_checking):
                 num_passed_iou += 1
                 iou_array.append(max_iou)
+                iou_passed_class_array.append(pred_class_list[element])
                 draw.rectangle([(boxes[0], boxes[1]), (boxes[2], boxes[3])], outline="red", width=3)
                 draw.text((boxes[0], boxes[1]), text=(get_class_name(pred_class_list[element])))
+                if (pred_class_list[element] == 1):
+                    D00_TP += 1
+                elif (pred_class_list[element] == 2):
+                    D01_TP += 1
+                elif (pred_class_list[element] == 3):
+                    D10_TP += 1
+                elif (pred_class_list[element] == 4):
+                    D11_TP += 1
+                elif (pred_class_list[element] == 5):
+                    D20_TP += 1
+                elif (pred_class_list[element] == 6):
+                    D30_TP += 1
+                elif (pred_class_list[element] == 7):
+                    D40_TP += 1
+                elif (pred_class_list[element] == 8):
+                    D43_TP += 1
+                elif (pred_class_list[element] == 9):
+                    D44_TP += 1
+                else:
+                    NO_TP += 1
+            else:
+                if (pred_class_list[element] == 1):
+                    D00_FP += 1
+                elif (pred_class_list[element] == 2):
+                    D01_FP += 1
+                elif (pred_class_list[element] == 3):
+                    D10_FP += 1
+                elif (pred_class_list[element] == 4):
+                    D11_FP += 1
+                elif (pred_class_list[element] == 5):
+                    D20_FP += 1
+                elif (pred_class_list[element] == 6):
+                    D30_FP += 1
+                elif (pred_class_list[element] == 7):
+                    D40_FP += 1
+                elif (pred_class_list[element] == 8):
+                    D43_FP += 1
+                elif (pred_class_list[element] == 9):
+                    D44_FP += 1
+                else:
+                    NO_FP += 1
         else:
             TN += 1
+            if (pred_class_list[element] == 1):
+                D00_TN += 1
+            elif (pred_class_list[element] == 2):
+                D01_TN += 1
+            elif (pred_class_list[element] == 3):
+                D10_TN += 1
+            elif (pred_class_list[element] == 4):
+                D11_TN += 1
+            elif (pred_class_list[element] == 5):
+                D20_TN += 1
+            elif (pred_class_list[element] == 6):
+                D30_TN += 1
+            elif (pred_class_list[element] == 7):
+                D40_TN += 1
+            elif (pred_class_list[element] == 8):
+                D43_TN += 1
+            elif (pred_class_list[element] == 9):
+                D44_TN += 1
+            else:
+                NO_TN += 1
 
         # max_iou = 0
 
@@ -147,6 +296,68 @@ def visual_image(index_of_image):
     # TP = num_passed_iou
     FP = (num_cracks - num_passed_iou) + extra_FP
 
+    if (extra_FP > 0):
+        extra_FP_array = remove_items_from_list(iou_passed_class_array, groundtruth_class_array)
+        print('extra FP')
+        print(extra_FP_array)
+        for element in range(len(extra_FP_array)):
+            if (extra_FP_array[element] == 1):
+                D00_FP += 1
+                D00_TP -= 1
+            elif (extra_FP_array[element] == 2):
+                D01_FP += 1
+                D01_TP -= 1
+            elif (extra_FP_array[element] == 3):
+                D10_FP += 1
+                D10_TP -= 1
+            elif (extra_FP_array[element] == 4):
+                D11_FP += 1
+                D11_TP -= 1
+            elif (extra_FP_array[element] == 5):
+                D20_FP += 1
+                D20_TP -= 1
+            elif (extra_FP_array[element] == 6):
+                D30_FP += 1
+                D30_TP -= 1
+            elif (extra_FP_array[element] == 7):
+                D40_FP += 1
+                D40_TP -= 1
+            elif (extra_FP_array[element] == 8):
+                D43_FP += 1
+                D43_TP -= 1
+            elif (extra_FP_array[element] == 9):
+                D44_FP += 1
+                D44_TP -= 1
+            else:
+                NO_FP += 1
+                NO_TP -= 1
+
+    if (FN > 0):
+        FN_array = remove_items_from_list(groundtruth_class_array, iou_passed_class_array)
+        print('FN is there')
+        print(FN_array)
+        for element in range(len(FN_array)):
+            if (FN_array[element] == 1):
+                D00_FN += 1
+            elif (FN_array[element] == 2):
+                D01_FN += 1
+            elif (FN_array[element] == 3):
+                D10_FN += 1
+            elif (FN_array[element] == 4):
+                D11_FN += 1
+            elif (FN_array[element] == 5):
+                D20_FN += 1
+            elif (FN_array[element] == 6):
+                D30_FN += 1
+            elif (FN_array[element] == 7):
+                D40_FN += 1
+            elif (FN_array[element] == 8):
+                D43_FN += 1
+            elif (FN_array[element] == 9):
+                D44_FN += 1
+            else:
+                NO_FN += 1
+
     if ((TP == 0 and FP == 0) or (TP == 0 and FN == 0) or (TN == 0 and FP == 0)):
         pass
     else:
@@ -159,7 +370,20 @@ def visual_image(index_of_image):
     else:
         F1_score = 2 * ((Precision * Recall) / (Precision + Recall))
 
-    display(image)
+    D00_TPR, D00_FPR = getTPR_FPR(D00_TP, D00_TN, D00_FP, D00_FN)
+    D01_TPR, D01_FPR = getTPR_FPR(D01_TP, D01_TN, D01_FP, D01_FN)
+    D10_TPR, D10_FPR = getTPR_FPR(D10_TP, D10_TN, D10_FP, D10_FN)
+    D11_TPR, D11_FPR = getTPR_FPR(D11_TP, D11_TN, D11_FP, D11_FN)
+    D20_TPR, D20_FPR = getTPR_FPR(D20_TP, D20_TN, D20_FP, D20_FN)
+    D30_TPR, D30_FPR = getTPR_FPR(D30_TP, D30_TN, D30_FP, D30_FN)
+    D40_TPR, D40_FPR = getTPR_FPR(D40_TP, D40_TN, D40_FP, D40_FN)
+    D43_TPR, D43_FPR = getTPR_FPR(D43_TP, D43_TN, D43_FP, D43_FN)
+    D44_TPR, D44_FPR = getTPR_FPR(D44_TP, D44_TN, D44_FP, D44_FN)
+    NO_TPR, NO_FPR = getTPR_FPR(NO_TP, NO_TN, NO_FP, NO_FN)
+
+    # ************
+    # display(image)
+
     if num_cracks == 1:
         print('There is', num_cracks, 'road crack in this image')
     elif num_cracks > 1:
@@ -176,7 +400,7 @@ def visual_image(index_of_image):
     # print('Recall', round(Recall, 4))
     # print('F1 score', round(F1_score, 4))
 
-    return Recall, FPR, num_total_cracks, iou_array, TP, FP, FN, TN
+    return Recall, FPR, num_total_cracks, iou_array, TP, FP, FN, TN, D00_TPR, D01_TPR, D10_TPR, D11_TPR, D20_TPR, D30_TPR, D40_TPR, D43_TPR, D44_TPR, NO_TPR, D00_FPR, D01_FPR, D10_FPR, D11_FPR, D20_FPR, D30_FPR, D40_FPR, D43_FPR, D44_FPR, NO_FPR
 
 
 def main():
@@ -185,6 +409,24 @@ def main():
     TPR_Recall = 0
     TPR_array = []
     FPR_array = []
+    D00_TPR_array = []
+    D00_FPR_array = []
+    D01_TPR_array = []
+    D01_FPR_array = []
+    D10_TPR_array = []
+    D10_FPR_array = []
+    D11_TPR_array = []
+    D11_FPR_array = []
+    D20_TPR_array = []
+    D20_FPR_array = []
+    D30_TPR_array = []
+    D30_FPR_array = []
+    D40_TPR_array = []
+    D40_FPR_array = []
+    D43_TPR_array = []
+    D43_FPR_array = []
+    D44_TPR_array = []
+    D44_FPR_array = []
     F1_score = 0
     input_Recall = 0
     input_FPR = 0
@@ -196,12 +438,31 @@ def main():
     # some_tests = 20
 
     for index in range(all_tests):
-        each_Recall, each_FPR, num_total_cracks, iou_array, each_TP, each_FP, each_FN, each_TN = visual_image(index)
+        each_Recall, each_FPR, num_total_cracks, iou_array, each_TP, each_FP, each_FN, each_TN, D00_TPR, D01_TPR, D10_TPR, D11_TPR, D20_TPR, D30_TPR, D40_TPR, D43_TPR, D44_TPR, NO_TPR, D00_FPR, D01_FPR, D10_FPR, D11_FPR, D20_FPR, D30_FPR, D40_FPR, D43_FPR, D44_FPR, NO_FPR = visual_image(
+            index)
         total += num_total_cracks
-        input_Recall += each_Recall
-        input_FPR += each_FPR
-        TPR_array.append(input_Recall)
-        FPR_array.append(input_FPR)
+        # input_Recall += each_Recall
+        # input_FPR += each_FPR
+        TPR_array.append(each_Recall)
+        FPR_array.append(each_FPR)
+        D00_TPR_array.append(D00_TPR)
+        D00_FPR_array.append(D00_FPR)
+        D01_TPR_array.append(D01_TPR)
+        D01_FPR_array.append(D01_FPR)
+        D10_TPR_array.append(D10_TPR)
+        D10_FPR_array.append(D10_FPR)
+        D11_TPR_array.append(D11_TPR)
+        D11_FPR_array.append(D11_FPR)
+        D20_TPR_array.append(D20_TPR)
+        D20_FPR_array.append(D20_FPR)
+        D30_TPR_array.append(D30_TPR)
+        D30_FPR_array.append(D30_FPR)
+        D40_TPR_array.append(D40_TPR)
+        D40_FPR_array.append(D40_FPR)
+        D43_TPR_array.append(D43_TPR)
+        D43_FPR_array.append(D43_FPR)
+        D44_TPR_array.append(D44_TPR)
+        D44_FPR_array.append(D44_FPR)
         TP += each_TP
         FP += each_FP
         FN += each_FN
@@ -237,7 +498,7 @@ def main():
         F1_score = 2 * ((Precision * TPR_Recall) / (Precision + TPR_Recall))
     total_CM = TP + TN + FP + FN
     model_accuracy = (TP + TN) / total_CM
-    print('There are', total, 'cracks in', len(dataset_test), 'tested images')
+    print('There are', TP, 'cracks in', len(dataset_test), 'tested images')
     print('Confusion Matrix:')
     print('True Postive is', round(TP, 4))
     print('True Negative is', round(TN, 4))
@@ -249,13 +510,46 @@ def main():
     print('F1 score', round(F1_score, 4))
     # print(TPR_array)
     # print(FPR_array)
+    TPR_array.sort()
+    FPR_array.sort()
+    D00_TPR_array.sort()
+    D00_FPR_array.sort()
+    D01_TPR_array.sort()
+    D01_FPR_array.sort()
+    D10_TPR_array.sort()
+    D10_FPR_array.sort()
+    D11_TPR_array.sort()
+    D11_FPR_array.sort()
+    D20_TPR_array.sort()
+    D20_FPR_array.sort()
+    D30_TPR_array.sort()
+    D30_FPR_array.sort()
+    D40_TPR_array.sort()
+    D40_FPR_array.sort()
+    D43_TPR_array.sort()
+    D43_FPR_array.sort()
+    D44_TPR_array.sort()
+    D44_FPR_array.sort()
+    # print(TPR_array)
+    # print(FPR_array)
 
     # Title
     plt.title('ROC Plot')
     # Axis labels
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.plot(FPR_array, TPR_array)
+    # plt.plot(FPR_array, TPR_array)
+    plt.plot(D00_FPR_array, D00_TPR_array, color='blue', linewidth=3, label='D00')
+    plt.plot(D01_FPR_array, D01_TPR_array, color='green', linewidth=3, label='D01')
+    plt.plot(D10_FPR_array, D10_TPR_array, color='orange', linewidth=3, label='D10')
+    plt.plot(D11_FPR_array, D11_TPR_array, color='black', linewidth=3, label='D11')
+    plt.plot(D20_FPR_array, D20_TPR_array, color='cyan', linewidth=3, label='D20')
+    plt.plot(D30_FPR_array, D30_TPR_array, color='magenta', linewidth=3, label='D30')
+    plt.plot(D40_FPR_array, D40_TPR_array, color='yellow', linewidth=3, label='D40')
+    plt.plot(D43_FPR_array, D43_TPR_array, color='lime', linewidth=3, label='D43')
+    plt.plot(D44_FPR_array, D44_TPR_array, color='coral', linewidth=3, label='D44')
+    plt.legend()
+    plt.show()
 
 
 main()
