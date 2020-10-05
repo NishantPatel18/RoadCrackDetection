@@ -298,8 +298,8 @@ def visual_image(index_of_image):
 
     if (extra_FP > 0):
         extra_FP_array = remove_items_from_list(iou_passed_class_array, groundtruth_class_array)
-        print('extra FP')
-        print(extra_FP_array)
+        # print('extra FP')
+        # print(extra_FP_array)
         for element in range(len(extra_FP_array)):
             if (extra_FP_array[element] == 1):
                 D00_FP += 1
@@ -334,8 +334,8 @@ def visual_image(index_of_image):
 
     if (FN > 0):
         FN_array = remove_items_from_list(groundtruth_class_array, iou_passed_class_array)
-        print('FN is there')
-        print(FN_array)
+        # print('FN is there')
+        # print(FN_array)
         for element in range(len(FN_array)):
             if (FN_array[element] == 1):
                 D00_FN += 1
