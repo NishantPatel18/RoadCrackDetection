@@ -68,7 +68,7 @@ criterion = nn.NLLLoss()
 optimizer = optim.Adam(model.classifier.parameters())
 
 # Training the Model
-epochs = 10
+epochs = 50
 start_train = time.time()
 epoch_array = []
 accu_array = []
@@ -186,26 +186,26 @@ for epoch in range(epochs):
                 D00_TPR_array.append(sensitivity)
                 D00_FPR_array.append(FPR)
             elif (checking_c == 2):
-                D01_TPR_array.append(sensitivity + 0.01)
-                D01_FPR_array.append(FPR + 0.01)
+                D01_TPR_array.append(sensitivity)
+                D01_FPR_array.append(FPR)
             elif (checking_c == 3):
-                D10_TPR_array.append(sensitivity + 0.02)
-                D10_FPR_array.append(FPR + 0.02)
+                D10_TPR_array.append(sensitivity)
+                D10_FPR_array.append(FPR)
             elif (checking_c == 4):
-                D11_TPR_array.append(sensitivity + 0.03)
-                D11_FPR_array.append(FPR + 0.03)
+                D11_TPR_array.append(sensitivity)
+                D11_FPR_array.append(FPR)
             elif (checking_c == 5):
-                D20_TPR_array.append(sensitivity + 0.04)
-                D20_FPR_array.append(FPR + 0.04)
+                D20_TPR_array.append(sensitivity)
+                D20_FPR_array.append(FPR)
             elif (checking_c == 6):
-                D40_TPR_array.append(sensitivity + 0.05)
-                D40_FPR_array.append(FPR + 0.05)
+                D40_TPR_array.append(sensitivity)
+                D40_FPR_array.append(FPR)
             elif (checking_c == 7):
-                D43_TPR_array.append(sensitivity + 0.06)
-                D43_FPR_array.append(FPR + 0.06)
+                D43_TPR_array.append(sensitivity)
+                D43_FPR_array.append(FPR)
             else:
-                D44_TPR_array.append(sensitivity + 0.07)
-                D44_FPR_array.append(FPR + 0.07)
+                D44_TPR_array.append(sensitivity)
+                D44_FPR_array.append(FPR)
 
             print('Class {}\nTP {}, TN {}, FP {}, FN {}'.format(c + 1, TP[c], TN, FP, FN))
             print('Sensitivity or Recall = {}'.format(sensitivity))
@@ -249,7 +249,7 @@ D44_TPR_array.sort()
 D44_FPR_array.sort()
 
 # Title
-plt.title('ROC Plot')
+plt.title('ROC Plot for DenseNet121')
 # Axis labels
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
