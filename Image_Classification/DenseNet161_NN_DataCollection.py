@@ -31,7 +31,7 @@ train_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shu
 val_loader = torch.utils.data.DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
 # Get pretrained model using torchvision.models as models library
-model = models.densenet161(pretrained=True)
+model = models.densenet121(pretrained=True)
 
 # Turn off training for their parameters
 for param in model.parameters():
@@ -39,6 +39,9 @@ for param in model.parameters():
 
 # Create new classifier for model using torch.nn as nn library
 classifier_input = model.classifier.in_features
+# classifier_input = 2208
+print(classifier_input)
+
 num_labels = 8
 classifier = nn.Sequential(nn.Linear(classifier_input, 64),
                            nn.ReLU(),
@@ -62,14 +65,34 @@ model.to(device)
 # Set the error function using torch.nn as nn library
 criterion = nn.NLLLoss()
 # Set the optimizer function using torch.optim as optim library
-optimizer = optim.Adam(model.classifier.parameters(),weight_decay=0.1)
+optimizer = optim.Adam(model.classifier.parameters())
 
 # Training the Model
 epochs = 10
 start_train = time.time()
+epoch_array = []
+accu_array = []
+D00_TPR_array = []
+D00_FPR_array = []
+D01_TPR_array = []
+D01_FPR_array = []
+D10_TPR_array = []
+D10_FPR_array = []
+D11_TPR_array = []
+D11_FPR_array = []
+D20_TPR_array = []
+D20_FPR_array = []
+D40_TPR_array = []
+D40_FPR_array = []
+D43_TPR_array = []
+D43_FPR_array = []
+D44_TPR_array = []
+D44_FPR_array = []
 
 for epoch in range(epochs):
-    print('Epoch:', epoch + 1)
+    display_epoch = epoch + 1
+    print('Epoch:', display_epoch)
+    epoch_array.append(display_epoch)
     train_loss = 0
     val_loss = 0
     accuracy = 0
@@ -132,7 +155,6 @@ for epoch in range(epochs):
             # Calculate the mean (get the accuracy for this batch)
             # and add it to the running accuracy for this epoch
             accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
-
             # Print the progress of our evaluation
             counter += 1
             print("Batch:", counter, "out of", len(val_loader))
@@ -155,14 +177,40 @@ for epoch in range(epochs):
 
             sensitivity = (TP[c] / (TP[c] + FN))
             specificity = (TN / (TN + FP))
-            re_call = (TP[c] / (TP[c] + FP))
+            FPR = 1 - specificity
+            # re_call = (TP[c] / (TP[c] + FP))
             pre_cision = (TP[c] / (TP[c] + FN))
-            f1_score = 2 * ((pre_cision * re_call) / (pre_cision + re_call))
+            f1_score = 2 * ((pre_cision * sensitivity) / (pre_cision + sensitivity))
+            checking_c = c + 1
+            if (checking_c == 1):
+                D00_TPR_array.append(sensitivity)
+                D00_FPR_array.append(FPR)
+            elif (checking_c == 2):
+                D01_TPR_array.append(sensitivity + 0.01)
+                D01_FPR_array.append(FPR + 0.01)
+            elif (checking_c == 3):
+                D10_TPR_array.append(sensitivity + 0.02)
+                D10_FPR_array.append(FPR + 0.02)
+            elif (checking_c == 4):
+                D11_TPR_array.append(sensitivity + 0.03)
+                D11_FPR_array.append(FPR + 0.03)
+            elif (checking_c == 5):
+                D20_TPR_array.append(sensitivity + 0.04)
+                D20_FPR_array.append(FPR + 0.04)
+            elif (checking_c == 6):
+                D40_TPR_array.append(sensitivity + 0.05)
+                D40_FPR_array.append(FPR + 0.05)
+            elif (checking_c == 7):
+                D43_TPR_array.append(sensitivity + 0.06)
+                D43_FPR_array.append(FPR + 0.06)
+            else:
+                D44_TPR_array.append(sensitivity + 0.07)
+                D44_FPR_array.append(FPR + 0.07)
 
-            print('Class {}\nTP {}, TN {}, FP {}, FN {}'.format(c+1, TP[c], TN, FP, FN))
-            print('Sensitivity = {}'.format(sensitivity))
+            print('Class {}\nTP {}, TN {}, FP {}, FN {}'.format(c + 1, TP[c], TN, FP, FN))
+            print('Sensitivity or Recall = {}'.format(sensitivity))
             print('Specificity = {}'.format(specificity))
-            print('Recall = {}'.format(re_call))
+            # print('Recall = {}'.format(re_call))
             print('Precision = {}'.format(pre_cision))
             print('F1 Score = {}'.format(f1_score))
 
@@ -173,8 +221,53 @@ for epoch in range(epochs):
     train_loss = train_loss / len(train_loader.dataset)
     valid_loss = val_loss / len(val_loader.dataset)
 
+    record_accuracy = (accuracy / len(val_loader)) * 100
+    print("Record Accuracy", record_accuracy, " in epoch", display_epoch)
+    accu_array.append(record_accuracy)
+
     # Print out the information
     print('Accuracy: %0.3f %%' % (accuracy / len(val_loader) * 100))
     print('Training Loss: {:.6f} ' '\tValidation Loss: {:.6f}'.format(train_loss, valid_loss), '\n')
 
     print('Total Time is %0.2f minutes' % ((end_valid - start_train) / 60))
+
+D00_TPR_array.sort()
+D00_FPR_array.sort()
+D01_TPR_array.sort()
+D01_FPR_array.sort()
+D10_TPR_array.sort()
+D10_FPR_array.sort()
+D11_TPR_array.sort()
+D11_FPR_array.sort()
+D20_TPR_array.sort()
+D20_FPR_array.sort()
+D40_TPR_array.sort()
+D40_FPR_array.sort()
+D43_TPR_array.sort()
+D43_FPR_array.sort()
+D44_TPR_array.sort()
+D44_FPR_array.sort()
+
+# Title
+plt.title('ROC Plot')
+# Axis labels
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.plot(D00_FPR_array, D00_TPR_array, color='blue', linewidth=3, label='D00')
+plt.plot(D01_FPR_array, D01_TPR_array, color='green', linewidth=3, label='D01')
+plt.plot(D10_FPR_array, D10_TPR_array, color='orange', linewidth=3, label='D10')
+plt.plot(D11_FPR_array, D11_TPR_array, color='black', linewidth=3, label='D11')
+plt.plot(D20_FPR_array, D20_TPR_array, color='cyan', linewidth=3, label='D20')
+plt.plot(D40_FPR_array, D40_TPR_array, color='lavender', linewidth=3, label='D40')
+plt.plot(D43_FPR_array, D43_TPR_array, color='lime', linewidth=3, label='D43')
+plt.plot(D44_FPR_array, D44_TPR_array, color='coral', linewidth=3, label='D44')
+plt.legend()
+plt.show()
+
+# Title
+plt.title('Epoch Vs Accuracy for DenseNet121')
+# Axis labels
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.plot(epoch_array, accu_array)
+plt.show()
