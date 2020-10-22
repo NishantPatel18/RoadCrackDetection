@@ -88,6 +88,22 @@ D43_TPR_array = []
 D43_FPR_array = []
 D44_TPR_array = []
 D44_FPR_array = []
+D00_TPR_array.append(0)
+D00_FPR_array.append(0)
+D01_TPR_array.append(0)
+D01_FPR_array.append(0)
+D10_TPR_array.append(0)
+D10_FPR_array.append(0)
+D11_TPR_array.append(0)
+D11_FPR_array.append(0)
+D20_TPR_array.append(0)
+D20_FPR_array.append(0)
+D40_TPR_array.append(0)
+D40_FPR_array.append(0)
+D43_TPR_array.append(0)
+D43_FPR_array.append(0)
+D44_TPR_array.append(0)
+D44_FPR_array.append(0)
 
 for epoch in range(epochs):
     display_epoch = epoch + 1
@@ -230,6 +246,23 @@ for epoch in range(epochs):
     print('Training Loss: {:.6f} ' '\tValidation Loss: {:.6f}'.format(train_loss, valid_loss), '\n')
 
     print('Total Time is %0.2f minutes' % ((end_valid - start_train) / 60))
+
+D00_TPR_array.append(1)
+D00_FPR_array.append(1)
+D01_TPR_array.append(1)
+D01_FPR_array.append(1)
+D10_TPR_array.append(1)
+D10_FPR_array.append(1)
+D11_TPR_array.append(1)
+D11_FPR_array.append(1)
+D20_TPR_array.append(1)
+D20_FPR_array.append(1)
+D40_TPR_array.append(1)
+D40_FPR_array.append(1)
+D43_TPR_array.append(1)
+D43_FPR_array.append(1)
+D44_TPR_array.append(1)
+D44_FPR_array.append(1)
 
 D00_TPR_array.sort()
 D00_FPR_array.sort()
