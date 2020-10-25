@@ -46,7 +46,7 @@ def get_class_number(class_input):
     return class_number
 
 
-class RaccoonDataset(torch.utils.data.Dataset):
+class RoadDamageDataset(torch.utils.data.Dataset):
     def __init__(self, root, data_file, transforms=None):
         self.root = root
         self.transforms = transforms
@@ -95,7 +95,7 @@ class RaccoonDataset(torch.utils.data.Dataset):
         return len(self.imgs)
 
 
-dataset = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/All_cities/Images",
+dataset = RoadDamageDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/All_cities/Images",
                          data_file="/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/all_cities.csv")
 dataset.__getitem__(0)
 
@@ -123,11 +123,11 @@ def get_transform(train):
 
 
 # use our dataset and defined transformations
-dataset = RaccoonDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/All_cities/Images",
+dataset = RoadDamageDataset(root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/All_cities/Images",
                          data_file="/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/all_cities.csv",
                          transforms=get_transform(train=True))
 
-dataset_test = RaccoonDataset(
+dataset_test = RoadDamageDataset(
     root="/content/RoadCrackDetection/RDDC_ObjectDetection/RoadDamageDataset/All_cities/Images",
     data_file="/content/RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD/all_cities.csv",
     transforms=get_transform(train=False))
@@ -154,7 +154,7 @@ print("We have: {} examples, {} are training and {} are testing".format(len(indi
 
 device = torch.device('cuda')
 
-# our dataset has two classes only - raccoon and not racoon
+# our dataset has 10 classes which are D00, D01, D10, D11, D20, D30, D40, D43, D44 and NO(negative class)
 num_classes = 10
 
 # get the model using our helper function
