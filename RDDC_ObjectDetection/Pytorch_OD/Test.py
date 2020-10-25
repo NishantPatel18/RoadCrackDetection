@@ -679,6 +679,7 @@ def main():
     print('Total Inference Time is %0.2f second' % total_infer_time)
     print('Average Inference Time is %0.2f second' % (total_infer_time / all_tests))
 
+    # sorting the all true positive and negative arrays to plot ROC curve
     TPR_array.sort()
     FPR_array.sort()
     D00_TPR_array.sort()
