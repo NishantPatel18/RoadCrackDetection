@@ -3,7 +3,9 @@ from IOU import get_iou
 import matplotlib.pyplot as plt
 import time
 
+# Define the number of class
 loaded_model = get_model(num_classes=10)
+# Load the model
 loaded_model.load_state_dict(torch.load("/content/drive/My Drive/Models/model_10_class"))
 
 
