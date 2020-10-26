@@ -52,13 +52,14 @@ Option 2: Using the Google Colab files directly which are "DenseNet161_Image_Cla
 
 Manual guide to run the object detection model
 --------------------------------------------------------------------------------------------------------------
+Step 1:
+--------------------------------------------------------------------------------------------------------------
+Guide to "RoadCrackDetection/Faster_R-CNN_Object_Detection/Pytorch_OD" directory.
 
-Guide to "RoadCrackDetection/RDDC_ObjectDetection/Pytorch_OD" directory.
-
-Step 1: If annotation of training is xml, there is a python file called "xml_to_csv.py" to change xml to csv.
+Step 2: If annotation of training is xml, there is a python file called "xml_to_csv.py" to change xml to csv.
 --------------------------------------------------------------------------------------------------------------
 
-Step 2: Training
+Step 3: Training
 --------------------------------------------------------------------------------------------------------------
 ![image](https://user-images.githubusercontent.com/49043498/97121898-8d620580-1786-11eb-970e-867d7930053d.png)
 
@@ -85,7 +86,7 @@ Give the directory to save the trained model and name the model. After that, run
 
 --------------------------------------------------------------------------------------------------------------
 
-Step 3: Testing
+Step 4: Testing
 --------------------------------------------------------------------------------------------------------------
 
 ![image](https://user-images.githubusercontent.com/49043498/97122450-c3a18400-178a-11eb-825b-6e7f38ddef00.png)
