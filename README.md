@@ -115,13 +115,13 @@ Step 2: Training and Testing
 --------------------------------------------------------------------------------------------------------------
 ![image](https://user-images.githubusercontent.com/49043498/97136449-02016800-17b8-11eb-89e4-922c127149fa.png)
 
-Provide the directories of image folders for training and testing
+Provide the directories of image folders for training and testing.
 
 --------------------------------------------------------------------------------------------------------------
 
 ![image](https://user-images.githubusercontent.com/49043498/97136564-51e02f00-17b8-11eb-92a0-787f536bd8cd.png)
 
-(Optional) Change the DenseNet model if you wanna use DenseNet-121 or Denset-201
+(Optional) Change the DenseNet model if you wanna use DenseNet-121 or DenseNet-201.
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -137,6 +137,6 @@ Define the "num_labels" according to your number of classes.
 
 Define the number of epoch.
 
-After that, run the training and testing.
+After that, run the model for training and testing.
 
 --------------------------------------------------------------------------------------------------------------
