@@ -1,35 +1,49 @@
 # RoadCrackDetection
 Our industrial project is on 'Intelligent Road Crack Detection using Deep Learning' where we create an artificial intelligence (AI) system that is able to classify and detect road cracks on New Zealand roads.
 
-This repositories contains 3 main folders and 2 Google Colab files.
+This repositories contains three main folders and two Google Colab files.
 
-3 main folders are:
+Main Folders:
 1.  Faster_R-CNN_Object_Detection
 2.  Image_Classification
 3.  YOLO_v3_Object_Detection
 
-2 Google Colab files are:
+Google Colab Files:
 1.  DenseNet161_Image_Classification.ipynb
 2.  Faster_R_CNN_Object_Detection.ipynb
 
 Faster_R-CNN_Object_Detection
+--------------------------------------------------------------------------------------------------------------
 
-This folder contains Pytorch_OD and RoadDamageDataset folders.
-Pytorch_OD folder contains all python code files.
-RoadDamageDataset folder contains 7 japanese cities road damage image folders of RDDC dataset.
+The Faster_R-CNN_Object Detection folder is the main folder that was used to create the object detection model for our project.
+Inside this folder, there are two folders which are called Pytorch_OD and RoadDamageDataset.
+The Pytorch_OD folder contains all the Python code files.
+The RoadDamageDataset folder contains road damage image folders of seven Japanese cities from the RDDC dataset.
 
 Image_Classification
+--------------------------------------------------------------------------------------------------------------
 
-This folder contains 5 CNN models and 2 main datasets.
-2 main datasets are CCIC (COncrete Crack for Image Classification) dataset and RDDC (Road Damage Detection and Classification) dataset.
-Each dataset is split into 70/30 ratio.
-There are 2 extra train and test folders which are AUG_RDDC and Balanced_RDDC.
-AUG_RDD_Test and AUG_RDD_Train contains augmented images.
-Balanced_RDDC_Test and Balanced_RDDC_Train contains equal amount of images for each class.
+The Image_Classification folder is the main folder that was used to create the image classification model for our project.
+This folder contains five Convolutional Neural Network (CNN) models and two main datasets.
+The two main datasets are the Concrete Crack for Image Classification (CCIC) dataset and the Road Damage Detection and Classification (RDDC) dataset.
+Each dataset is split into a 70/30 ratio for training and testing.
+There are two extra training and testing folders which are AUG_RDDC and Balanced_RDDC.
+AUG_RDD_Train and AUG_RDD_Test contains augmented images that was used to try and improve the performance of our model.
+Balanced_RDDC_Test and Balanced_RDDC_Train contains equal amount of images for each class in the RDDC dataset.
 
 YOLO_v3_Object_Detection
+--------------------------------------------------------------------------------------------------------------
 
-This folder contains python code files for yolo v3 object detection and configuration files.
+This folder contains Python code files for YOLO v3 object detection and configuration files.
+The YOLO v3 object detection model was only used for upskilling purposes during the object detection phase in our project.
+Therefore, it is only provided to show evidence of upskilling.
+
+Options to run our image classification and object detection models
+--------------------------------------------------------------------------------------------------------------
+
+Option 1: Using the code in the "Image_Classification" and "Faster_R-CNN_Object_Detection" folders.
+
+Option 2: Using the Google Colab files directly which are "DenseNet161_Image_Classification.ipynb" and "Faster_R_CNN_Object_Detection.ipynb".
 
 --------------------------------------------------------------------------------------------------------------
 
