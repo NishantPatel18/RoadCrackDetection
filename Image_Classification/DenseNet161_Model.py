@@ -39,9 +39,6 @@ for param in model.parameters():
 
 # Create new classifier for model using torch.nn as nn library
 classifier_input = model.classifier.in_features
-# classifier_input = 2208
-print(classifier_input)
-
 num_labels = 8
 classifier = nn.Sequential(nn.Linear(classifier_input, 64),
                            nn.ReLU(),
