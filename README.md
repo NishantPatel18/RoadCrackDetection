@@ -1,10 +1,16 @@
 # RoadCrackDetection
 Our industrial project is on 'Intelligent Road Crack Detection using Deep Learning' where we create an artificial intelligence (AI) system that is able to classify and detect road cracks on New Zealand roads.
 
-This repositories contains 3 main folders which are:
+This repositories contains 3 main folders and 2 Google Colab files.
+
+3 main folders are:
 1.  Faster_R-CNN_Object_Detection
 2.  Image_Classification
 3.  YOLO_v3_Object_Detection
+
+2 Google Colab files are:
+1.  DenseNet161_Image_Classification.ipynb
+2.  Faster_R_CNN_Object_Detection.ipynb
 
 Faster_R-CNN_Object_Detection
 
