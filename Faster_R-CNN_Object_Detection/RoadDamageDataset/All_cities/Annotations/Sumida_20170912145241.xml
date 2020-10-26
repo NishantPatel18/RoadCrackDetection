@@ -1,0 +1,27 @@
+<annotation>
+    <folder>Sumida</folder>
+    <filename>Sumida_20170912145241.jpg</filename>
+    <size>
+        <width>600</width>
+        <height>600</height>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>D01</name>
+        <bndbox>
+            <xmin>344</xmin>
+            <ymin>418</ymin>
+            <xmax>401</xmax>
+            <ymax>528</ymax>
+        </bndbox>
+    </object>
+    <object>
+        <name>D01</name>
+        <bndbox>
+            <xmin>228</xmin>
+            <ymin>441</ymin>
+            <xmax>299</xmax>
+            <ymax>539</ymax>
+        </bndbox>
+    </object>
+</annotation>
