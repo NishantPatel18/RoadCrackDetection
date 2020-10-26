@@ -1,10 +1,10 @@
 # RoadCrackDetection
-Our industrial project is on 'Intelligent Road Crack Detection using Deep Learning' where we create an artificial intelligence (AI) system that is able to classify and detect road cracks on New Zealand roads.
+Our industrial project is called *Intelligent Road Crack Detection using Deep Learning* where we create an artificial intelligence (AI) system that is able to classify and detect road cracks on New Zealand roads.
 
 Description
 --------------------------------------------------------------------------------------------------------------
 
-This repositories contains three main folders and two Google Colab files.
+This repositories contains *three* main folders and *two* Google Colab files.
 
 Main Folders:
 1.  Faster_R-CNN_Object_Detection
@@ -21,18 +21,18 @@ Faster_R-CNN_Object_Detection
 The Faster_R-CNN_Object Detection folder is the main folder that was used to create the object detection model for our project.
 Inside this folder, there are two folders which are called Pytorch_OD and RoadDamageDataset.
 The Pytorch_OD folder contains all the Python code files.
-The RoadDamageDataset folder contains road damage image folders of seven Japanese cities from the RDDC dataset.
+The RoadDamageDataset folder contains the road damage image folders of seven Japanese cities from the Road Damage Detection and Classification [(RDDC)](https://github.com/sekilab/RoadDamageDetector) dataset.
 
 Image_Classification
 --------------------------------------------------------------------------------------------------------------
 
 The Image_Classification folder is the main folder that was used to create the image classification model for our project.
 This folder contains five Convolutional Neural Network (CNN) models and two main datasets.
-The two main datasets are the Concrete Crack for Image Classification (CCIC) dataset and the Road Damage Detection and Classification (RDDC) dataset.
+The two main datasets are the Concrete Crack for Image Classification [(CCIC)](https://data.mendeley.com/datasets/5y9wdsg2zt/2) dataset and the [RDDC](https://github.com/sekilab/RoadDamageDetector) dataset.
 Each dataset is split into a 70/30 ratio for training and testing.
-There are two extra training and testing folders which are AUG_RDDC and Balanced_RDDC.
+There are two extra training and testing folders which are named AUG_RDDC and Balanced_RDDC.
 AUG_RDD_Train and AUG_RDD_Test contains augmented images that was used to try and improve the performance of our model.
-Balanced_RDDC_Test and Balanced_RDDC_Train contains equal amount of images for each class in the RDDC dataset.
+Balanced_RDDC_Test and Balanced_RDDC_Train contains an equal amount of images for each class in the RDDC dataset.
 
 YOLO_v3_Object_Detection
 --------------------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ Options to run our image classification and object detection models
 
 Option 1: Using the code in the "Image_Classification" and "Faster_R-CNN_Object_Detection" folders.
 
-Option 2: Using the Google Colab files directly which are "DenseNet161_Image_Classification.ipynb" and "Faster_R_CNN_Object_Detection.ipynb".
+Option 2: Directly using the Google Colab files which are "DenseNet161_Image_Classification.ipynb" and "Faster_R_CNN_Object_Detection.ipynb".
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -105,7 +105,7 @@ Step 4: Testing
 
 Define the number of classes and load the trained model that was saved after training.
 
-After that, run the model testing.
+After that, run the model for testing.
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -127,7 +127,7 @@ Provide the directories of image folders for training and testing.
 
 ![image](https://user-images.githubusercontent.com/49043498/97136564-51e02f00-17b8-11eb-92a0-787f536bd8cd.png)
 
-(Optional) Change the DenseNet model if you wanna use DenseNet-121 or DenseNet-201.
+(Optional) Change the DenseNet model if you want to use DenseNet-121 or DenseNet-201.
 
 --------------------------------------------------------------------------------------------------------------
 
