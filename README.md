@@ -78,7 +78,9 @@ Define the total number of images in "num_total_for_train_test".
 
 Define the number of test images in "num_test" that will be used for testing.
 
-Once total and test images have been specified, the number of images that will be used for training is defined in the formula "num_train = num_total_for_train_test - num_test".
+Once total and test images have been specified, the number of images that will be used for training is defined in the formula:
+
+"num_train = num_total_for_train_test - num_test"
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -86,7 +88,7 @@ Once total and test images have been specified, the number of images that will b
 
 Define the "num_classes" according to your number of classes.
 
-Adjust the learning rate in "lr" and "num_epochs" as you need.
+Adjust the learning rate in "lr" and number of epochs in "num_epochs" as you need.
 
 --------------------------------------------------------------------------------------------------------------
 
