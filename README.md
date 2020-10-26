@@ -54,13 +54,13 @@ Manual guide to run the object detection model
 --------------------------------------------------------------------------------------------------------------
 Step 1:
 --------------------------------------------------------------------------------------------------------------
-Guide to "RoadCrackDetection/Faster_R-CNN_Object_Detection/Pytorch_OD" directory.
+Proceed to "RoadCrackDetection/Faster_R-CNN_Object_Detection/Pytorch_OD" directory.
 
 --------------------------------------------------------------------------------------------------------------
 
 Step 2: 
 --------------------------------------------------------------------------------------------------------------
-If annotation of training is xml, there is a python file called "xml_to_csv.py" to change xml to csv.
+If the annotation file is of type XML, there is a Python file called "xml_to_csv.py" to change it to CSV.
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -68,13 +68,17 @@ Step 3: Training
 --------------------------------------------------------------------------------------------------------------
 ![image](https://user-images.githubusercontent.com/49043498/97121898-8d620580-1786-11eb-970e-867d7930053d.png)
 
-Provide the directories of image folders and csv files.
+Provide the directories of image folders and CSV files.
 
 --------------------------------------------------------------------------------------------------------------
 
 ![image](https://user-images.githubusercontent.com/49043498/97122237-4de8e880-1789-11eb-845a-d962f43eade7.png)
 
-Set the number of total and test here. That will also calculate the number of train.
+Define the total number of images in "num_total_for_train_test".
+
+Define the number of test images in "num_test" that will be used for testing.
+
+Once total and test images have been specified, the number of images that will be used for training is defined in the formula "num_train = num_total_for_train_test - num_test".
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -88,7 +92,7 @@ Adjust the learning rate in "lr" and "num_epochs" as you need.
 
 ![image](https://user-images.githubusercontent.com/49043498/97122320-f1d29400-1789-11eb-9b0a-14b14dac8a48.png)
 
-Give the directory to save the trained model and name the model. After that, run the train.
+Provide a directory to save and name the trained model. After that, run the model for training.
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -97,9 +101,9 @@ Step 4: Testing
 
 ![image](https://user-images.githubusercontent.com/49043498/97122450-c3a18400-178a-11eb-825b-6e7f38ddef00.png)
 
-Define the number of classes and load the trained model that is saved in the training.
+Define the number of classes and load the trained model that was saved after training.
 
-After that, run the test.
+After that, run the model testing.
 
 --------------------------------------------------------------------------------------------------------------
 
@@ -107,7 +111,7 @@ Manual guide to run the image classification model
 --------------------------------------------------------------------------------------------------------------
 Step 1:
 --------------------------------------------------------------------------------------------------------------
-Guide to "RoadCrackDetection/Image_Classification" directory.
+Proceed to "RoadCrackDetection/Image_Classification" directory.
 
 --------------------------------------------------------------------------------------------------------------
 
